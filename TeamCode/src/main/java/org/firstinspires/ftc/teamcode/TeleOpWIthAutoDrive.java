@@ -88,7 +88,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @TeleOp(name="TeleOp with Autodrive", group = "TeleOp")
-//@Disabled
+@Disabled
 public class TeleOpWIthAutoDrive extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.

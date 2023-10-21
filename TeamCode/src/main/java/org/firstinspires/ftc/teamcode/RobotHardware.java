@@ -29,13 +29,11 @@ public class RobotHardware {
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
     public static final double PIXEL_CARRY_POSITION = 0.0;
-    public static final double PIXEL_RELEASE_POSITION = 0.5;
-    public static final int PICKUP_POSITION = 0;
-    public static final int CARRY_POSITION = 100;
-    public static final int FLIP_POSITION = 500;
+    public static final double PIXEL_RELEASE_POSITION = 10;
+    public static final int PICKUP_POSITION = 75;
+    public static final int CARRY_POSITION = 0;
+    public static final int FLIP_POSITION = -200;
     public static final double SERVO_SPEED = 0.02;  // sets rate to move servo
-    public static final double ARM_UP_POWER = 0.45;
-    public static final double ARM_DOWN_POWER = -0.45;
     public double MAX_DRIVE_SPEED = 0.5;
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
@@ -83,13 +81,15 @@ public class RobotHardware {
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        flipperArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         sweeper.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flipperArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flipperArm.setTargetPosition(CARRY_POSITION);
+        flipperArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -201,37 +201,35 @@ public class RobotHardware {
                 rightBackDrive.isBusy();
     }
 
-//    public void setSweeperOn(boolean on) {
-//        if (on) {
-//            double SWEEPER_POWER = 0.5;
-//            sweeper.setPower(SWEEPER_POWER);
-//        } else {
-//            sweeper.setPower(0.0);
-//        }
-//    }
+    public void setSweeperOn(boolean on) {
+        if (on) {
+            double SWEEPER_POWER = -0.5 ;
+            sweeper.setPower(SWEEPER_POWER);
+        } else {
+            sweeper.setPower(0.0);
+        }
+    }
 
     public void setSweeperPower(double power){
         sweeper.setPower(power);
     }
 
-    public void raiseArm() {
-        if (flipperArm.getTargetPosition() == PICKUP_POSITION) {
-            flipperArm.setTargetPosition(CARRY_POSITION);
-            flipperArm.setPower(0.2);
-        } else if (flipperArm.getTargetPosition() == CARRY_POSITION) {
-            flipperArm.setTargetPosition(FLIP_POSITION);
-            flipperArm.setPower(0.75);
-        }
+    public void moveArmToPickupPosition() {
+        flipperArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        flipperArm.setTargetPosition(PICKUP_POSITION);
+        flipperArm.setPower(0.1);
     }
 
-    public void lowerArm() {
-        if (flipperArm.getTargetPosition() == FLIP_POSITION) {
-            flipperArm.setTargetPosition(CARRY_POSITION);
-            flipperArm.setPower(0.75);
-        } else if (flipperArm.getTargetPosition() == CARRY_POSITION) {
-            flipperArm.setTargetPosition(PICKUP_POSITION);
-            flipperArm.setPower(0.2);
-        }
+    public void moveArmToCarryPosition() {
+        flipperArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flipperArm.setTargetPosition(CARRY_POSITION);
+        flipperArm.setPower(0.1);
+    }
+
+    public void moveArmToFlipPosition() {
+        flipperArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        flipperArm.setTargetPosition(FLIP_POSITION);
+        flipperArm.setPower(0.1);
     }
 
     public boolean driveStraight(double maxDriveSpeed,

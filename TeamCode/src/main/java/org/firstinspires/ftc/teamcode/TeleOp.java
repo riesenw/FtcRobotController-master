@@ -56,28 +56,28 @@ public class TeleOp extends LinearOpMode {
                 robot.MAX_DRIVE_SPEED = 0.5;
             }
 
-//            if (gamepad2.circle) {
-////                robot.setSweeperOn(true);
-//            }
-//            if (gamepad2.cross) {
-////                robot.setSweeperOn(false);
-//            }
-//
-//            if (gamepad2.dpad_down) {
-//                robot.lowerArm();
-//            }
-//            if (gamepad2.dpad_up) {
-//                robot.raiseArm();
-//            }
+            if (gamepad2.circle) {
+                robot.setSweeperOn(true);
+            }
+            if (gamepad2.cross) {
+                robot.setSweeperOn(false);
+            }
+
+
+            if (gamepad2.dpad_left) {
+                robot.moveArmToPickupPosition();
+            }
+            if (gamepad2.dpad_up) {
+                robot.moveArmToCarryPosition();
+            }
+            if (gamepad2.dpad_right) {
+                robot.moveArmToFlipPosition();
+            }
 
             double axial = -gamepad1.left_stick_y;
             double lateral = -gamepad1.left_stick_x;
             double yaw = -gamepad1.right_stick_x;
             robot.moveRobot(axial, lateral, yaw);
-
-            robot.setSweeperPower(gamepad2.left_stick_x);
-
-            robot.setArmPower(gamepad2.right_stick_x * 0.1);
 
             if(gamepad2.circle){
                 robot.deployPixel();

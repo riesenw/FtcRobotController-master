@@ -128,6 +128,8 @@ public class AutonomousBackstageRed extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init();
+        waitForStart();
+        robot.driveStraight(0.25,10);
 
 
 
@@ -152,12 +154,12 @@ public class AutonomousBackstageRed extends LinearOpMode {
 
 //
 //      TEAM 6025 AUTONOMOUS SEQUENCE STARTS HERE
-        boolean hitSomething = robot.driveStraight(0.4,25.0);
-        if (hitSomething) {
+//        boolean hitSomething = robot.driveStraight(0.4,25.0);
+//        if (hitSomething) {
 //            robot.deployPixel();
-        } else {
+//        } else {
 //            robot.strafe(0.8, -8.0);
-        }
+//        }
 //
 //                if touches stop and place pixel
 //                if (robot.touchSensor.isPressed()){
