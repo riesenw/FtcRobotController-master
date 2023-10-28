@@ -6,13 +6,15 @@ import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class RobotHardware {
+
 
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
@@ -20,12 +22,12 @@ public class RobotHardware {
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
-    private DcMotor flipperArm = null;
+    private DcMotor arm = null;
     private DcMotor sweeper = null;
     private Servo pixelRelease = null;
-    public ColorRangeSensor distanceSensor = null;
+    private ColorRangeSensor distanceSensor = null;
 
-    private IMU imu         = null;
+    private IMU imu = null;
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
     public static final double PIXEL_CARRY_POSITION = 0.0;
@@ -33,27 +35,17 @@ public class RobotHardware {
     public static final int PICKUP_POSITION = 75;
     public static final int CARRY_POSITION = 0;
     public static final int FLIP_POSITION = -200;
-    public static final double SERVO_SPEED = 0.02;  // sets rate to move servo
     public double MAX_DRIVE_SPEED = 0.5;
-
-    // Calculate the COUNTS_PER_INCH for your specific drive train.
-    // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
-    // For external drive gearing, set DRIVE_GEAR_REDUCTION as needed.
-    // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
-    // This is gearing DOWN for less speed and more torque.
-    // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double COUNTS_PER_MOTOR_REV = 537.7;   // eg: GoBILDA 312 RPM Yellow Jacket
-    static final double DRIVE_GEAR_REDUCTION = 1.0;     // No External Gearing.
-    static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+    private static final double STEERING_CORRECTION = 0.01;
+    static final double COUNTS_PER_INCH_DRIVING = 96;
+    static final double COUNTS_PER_INCH_STRAFING = 1;
 
     // Define the Proportional control coefficient (or GAIN) for "heading control".
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
     // Increase these numbers if the heading does not corrects strongly enough (eg: a heavy robot or using tracks)
     // Decrease these numbers if the heading does not settle on the correct value (eg: very agile robot with omni wheels)
-    static final double     P_TURN_GAIN            = 0.02;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_GAIN           = 0.03;     // Larger is more responsive, but also less stable
+    static final double P_TURN_GAIN = 0.02;     // Larger is more responsive, but also less stable
+    static final double P_DRIVE_GAIN = 0.03;     // Larger is more responsive, but also less stable
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public RobotHardware(LinearOpMode opmode) {
@@ -66,8 +58,11 @@ public class RobotHardware {
         rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back_drive");
-        flipperArm = myOpMode.hardwareMap.get(DcMotor.class, "flipper_arm");
+        arm = myOpMode.hardwareMap.get(DcMotor.class, "flipper_arm");
         sweeper = myOpMode.hardwareMap.get(DcMotor.class, "sweeper");
+
+        pixelRelease = myOpMode.hardwareMap.get(Servo.class, "pixel_release");
+
         distanceSensor = myOpMode.hardwareMap.get(ColorRangeSensor.class, "distance_sensor");
 
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
@@ -81,24 +76,23 @@ public class RobotHardware {
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        flipperArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         sweeper.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        flipperArm.setTargetPosition(CARRY_POSITION);
-        flipperArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setTargetPosition(CARRY_POSITION);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flipperArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        pixelRelease = myOpMode.hardwareMap.get(Servo.class, "pixel_release");
         pixelRelease.setPosition(PIXEL_CARRY_POSITION);
 
         /* The next two lines define Hub orientation.
@@ -107,7 +101,7 @@ public class RobotHardware {
          * To Do:  EDIT these two lines to match YOUR mounting configuration.
          */
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
         // Now initialize the IMU with this mounting orientation
@@ -118,43 +112,12 @@ public class RobotHardware {
         myOpMode.telemetry.update();
     }
 
-//    /**
-//     * Calculates the left/right motor powers required to achieve the requested
-//     * robot motions: Drive (Axial motion) and Turn (Yaw motion).
-//     * Then sends these power levels to the motors.
-//     *
-//     * @param Drive Fwd/Rev driving power (-1.0 to 1.0) +ve is forward
-//     * @param Turn  Right/Left turning power (-1.0 to 1.0) +ve is CW
-//     */
-//    public void driveRobot(double Drive, double Turn) {
-//        // Combine drive and turn for blended motion.
-//        double left = Drive + Turn;
-//        double right = Drive - Turn;
-//
-//        // Scale the values so neither exceed +/- 1.0
-//        double max = Math.max(Math.abs(left), Math.abs(right));
-//        if (max > 1.0) {
-//            left /= max;
-//            right /= max;
-//        }
-//
-//        // Use existing function to drive both wheels.
-//        setDrivePower(left, right);
-//    }
-
-//    /**
-//     * Pass the requested wheel motor powers to the appropriate hardware drive motors.
-//     *
-//     * @param leftWheel  Fwd/Rev driving power (-1.0 to 1.0) +ve is forward
-//     * @param rightWheel Fwd/Rev driving power (-1.0 to 1.0) +ve is forward
-//     */
-//    public void setDrivePower(double leftWheel, double rightWheel) {
-//        // Output the values to the motor drives.
-//        leftDrive.setPower(leftWheel);
-//        rightDrive.setPower(rightWheel);
-//    }
-
     public void moveRobot(double axial, double lateral, double yaw) {
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Calculate wheel powers.
         double leftFrontPower = axial - lateral - yaw;
         double rightFrontPower = axial + lateral + yaw;
@@ -166,7 +129,8 @@ public class RobotHardware {
         max = Math.max(max, Math.abs(leftBackPower));
         max = Math.max(max, Math.abs(rightBackPower));
 
-        if (max > 1.0) {
+        if (max > 0.75) {
+            //     if (max > MAX_DRIVE_SPEED) {
             leftFrontPower /= max;
             rightFrontPower /= max;
             leftBackPower /= max;
@@ -180,60 +144,51 @@ public class RobotHardware {
         rightBackDrive.setPower(rightBackPower);
     }
 
-    public void setArmPower(double power) {
-        flipperArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flipperArm.setPower(power);
-    }
-
-    public void setArmPosition(int targetPosition) {
-        flipperArm.setTargetPosition(targetPosition);
-        flipperArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    public void changeArmPosition(int targetPosition) {
+        arm.setTargetPosition(targetPosition);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void deployPixel() {
         pixelRelease.setPosition(PIXEL_RELEASE_POSITION);
+        myOpMode.sleep(250);
+        pixelRelease.setPosition(PIXEL_CARRY_POSITION);  // reset for next match
     }
 
-    public boolean isMoving() {
-        return leftFrontDrive.isBusy() ||
-                rightFrontDrive.isBusy() ||
-                leftBackDrive.isBusy() ||
-                rightBackDrive.isBusy();
-    }
 
     public void setSweeperOn(boolean on) {
         if (on) {
-            double SWEEPER_POWER = -0.5 ;
+            double SWEEPER_POWER = -0.5;
             sweeper.setPower(SWEEPER_POWER);
         } else {
             sweeper.setPower(0.0);
         }
     }
 
-    public void setSweeperPower(double power){
+    public void setSweeperPower(double power) {
         sweeper.setPower(power);
     }
 
     public void moveArmToPickupPosition() {
-        flipperArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        flipperArm.setTargetPosition(PICKUP_POSITION);
-        flipperArm.setPower(0.1);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        arm.setTargetPosition(PICKUP_POSITION);
+        arm.setPower(0.1);
     }
 
     public void moveArmToCarryPosition() {
-        flipperArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flipperArm.setTargetPosition(CARRY_POSITION);
-        flipperArm.setPower(0.1);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.setTargetPosition(CARRY_POSITION);
+        arm.setPower(0.1);
     }
 
     public void moveArmToFlipPosition() {
-        flipperArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        flipperArm.setTargetPosition(FLIP_POSITION);
-        flipperArm.setPower(0.1);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        arm.setTargetPosition(FLIP_POSITION);
+        arm.setPower(0.1);
     }
 
     public boolean driveStraight(double maxDriveSpeed,
-                                 double distance) {
+                                 double distance) throws InterruptedException {
 
         // This method uses IMU to go straight forward or back from current heading:
         // robot must be pointed in the correct direction prior to calling.
@@ -244,7 +199,7 @@ public class RobotHardware {
 
 
             // Determine new target position, and pass to motor controller
-            int moveCounts = (int) (distance * COUNTS_PER_INCH);
+            int moveCounts = (int) (distance * COUNTS_PER_INCH_DRIVING);
             leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             leftFrontDrive.setTargetPosition(moveCounts);
             leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -264,36 +219,43 @@ public class RobotHardware {
             // Set the required driving speed  (must be positive for RUN_TO_POSITION)
             // Start driving straight, and then enter the control loop
             maxDriveSpeed = Math.abs(maxDriveSpeed);
-            moveRobot(maxDriveSpeed, 0, 0);
+            leftFrontDrive.setPower(maxDriveSpeed);
+            rightFrontDrive.setPower(maxDriveSpeed);
+            leftBackDrive.setPower(maxDriveSpeed);
+            rightBackDrive.setPower(maxDriveSpeed);
 
-            // keep looping while we are still active, and ALL motors are running.
-            while (myOpMode.opModeIsActive() &&
-                    leftFrontDrive.isBusy() &&
-                    rightFrontDrive.isBusy() &&
-                    leftBackDrive.isBusy() &&
-                    rightBackDrive.isBusy()) {
-
-//                if(touchSensor.isPressed()){
-//                    hitSomething = true;
-//                }
-
-                // Determine required steering to keep on heading
-                double turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
-
-                // if driving in reverse, the motor correction also needs to be reversed
-                if (distance < 0)
-                    turnSpeed *= -1.0;
-
-                // Apply the turning correction to the current driving speed.
-                moveRobot(maxDriveSpeed,0.0,turnSpeed);
+            while (myOpMode.opModeIsActive()) {
+                Thread.sleep(20);
             }
 
-            // Stop all motion & Turn off RUN_TO_POSITION
-            moveRobot(0, 0,0);
-            leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            // keep looping while we are still active, and ALL motors are running.
+//            while (myOpMode.opModeIsActive() &&
+//                    leftFrontDrive.isBusy() &&
+//                    rightFrontDrive.isBusy() &&
+//                    leftBackDrive.isBusy() &&
+//                    rightBackDrive.isBusy()) {
+//
+////                if(touchSensor.isPressed()){
+////                    hitSomething = true;
+////                }
+//
+//                // Determine required steering to keep on heading
+//                double turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
+//
+//                // if driving in reverse, the motor correction also needs to be reversed
+//                if (distance < 0)
+//                    turnSpeed *= -1.0;
+//
+//                // Apply the turning correction to the current driving speed.
+//                moveRobot(maxDriveSpeed,0.0,turnSpeed);
+//            }
+//
+//            // Stop all motion & Turn off RUN_TO_POSITION
+//            moveRobot(0, 0,0);
+//            leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         return hitSomething;
     }
@@ -305,10 +267,10 @@ public class RobotHardware {
      * @param proportionalGain Gain factor applied to heading error to obtain turning power.
      * @return Turning power needed to get to required heading.
      */
-    public double getSteeringCorrection(double desiredHeading, double proportionalGain) {
-        double targetHeading = desiredHeading;
 
-        double headingError = targetHeading - getHeading();
+    private double getSteeringCorrection(double desiredHeading, double proportionalGain) {
+
+        double headingError = desiredHeading - getHeading();
 
         // Normalize the error to be within +/- 180 degrees
         while (headingError > 180) headingError -= 360;
@@ -321,8 +283,189 @@ public class RobotHardware {
     /**
      * read the Robot heading directly from the IMU (in degrees)
      */
-    public double getHeading() {
+    private double getHeading() {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         return orientation.getYaw(AngleUnit.DEGREES);
+    }
+
+    public boolean searchForward(double heading, double distance, double speed) {
+        boolean obstacleDetected = false;
+        rotateToHeading(heading);
+
+        leftFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING));
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setPower(speed);
+        rightFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING));
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setPower(speed);
+        leftBackDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING));
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setPower(speed);
+        rightBackDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING));
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setPower(speed);
+
+        while (leftFrontDrive.isBusy() && myOpMode.opModeIsActive()) {
+            double steeringCorrection = getSteeringCorrection(heading, P_DRIVE_GAIN);
+            leftFrontDrive.setPower(speed + steeringCorrection);
+            rightFrontDrive.setPower(speed - steeringCorrection);
+            leftBackDrive.setPower(speed + steeringCorrection);
+            rightBackDrive.setPower(speed - steeringCorrection);
+            obstacleDetected = checkForObstacle();
+            myOpMode.sleep(20);
+        }
+        return obstacleDetected;
+    }
+
+    public void backUp(double directionToMove, double distance, double speed) {
+
+        // since we are backing up, direction moving is given but direction facing is opposite.
+        double heading = directionToMove - 180;
+        // Normalize the error to be within +/- 180 degrees
+        while (directionToMove > 180) directionToMove -= 360;
+        while (directionToMove <= -180) directionToMove += 360;
+        rotateToHeading(heading);
+
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setTargetPosition(-(int) (distance * COUNTS_PER_INCH_DRIVING));
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setPower(speed);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setTargetPosition(-(int) (distance * COUNTS_PER_INCH_DRIVING));
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setPower(speed);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setTargetPosition(-(int) (distance * COUNTS_PER_INCH_DRIVING));
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setPower(speed);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setTargetPosition(-(int) (distance * COUNTS_PER_INCH_DRIVING));
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setPower(speed);
+
+        while (leftFrontDrive.isBusy() && myOpMode.opModeIsActive()) {
+            double steeringCorrection = getSteeringCorrection(heading, P_DRIVE_GAIN);
+            leftFrontDrive.setPower(speed + steeringCorrection);
+            rightFrontDrive.setPower(speed - steeringCorrection);
+            leftBackDrive.setPower(speed + steeringCorrection);
+            rightBackDrive.setPower(speed - steeringCorrection);
+            myOpMode.sleep(20);
+        }
+    }
+
+    public void forward(double directionToMove, double distance, double speed) {
+
+        // Normalize the travel direction given to be within +/- 180 degrees
+        while (directionToMove > 180) directionToMove -= 360;
+        while (directionToMove <= -180) directionToMove += 360;
+        double heading = directionToMove;
+
+        rotateToHeading(heading);
+
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING));
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setPower(speed);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING));
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setPower(speed);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING));
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setPower(speed);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING));
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setPower(speed);
+
+        while (leftFrontDrive.isBusy() && myOpMode.opModeIsActive()) {
+            double steeringCorrection = getSteeringCorrection(heading, P_DRIVE_GAIN);
+            leftFrontDrive.setPower(speed + steeringCorrection);
+            rightFrontDrive.setPower(speed - steeringCorrection);
+            leftBackDrive.setPower(speed + steeringCorrection);
+            rightBackDrive.setPower(speed - steeringCorrection);
+            myOpMode.sleep(20);
+        }
+    }
+
+    public void holdHeading(double heading, double holdTime) {
+
+        ElapsedTime holdTimer = new ElapsedTime();
+        holdTimer.reset();
+        double maxTurnSpeed = 0.2;
+
+        // keep looping while we have time remaining.
+        while (myOpMode.opModeIsActive() && (holdTimer.time() < holdTime)) {
+            // Determine required steering to keep on heading
+            double turnSpeed = getSteeringCorrection(heading, P_TURN_GAIN);
+
+            // Clip the speed to the maximum permitted value.
+            turnSpeed = Range.clip(turnSpeed, -maxTurnSpeed, maxTurnSpeed);
+
+            // Pivot in place by applying the turning correction
+            moveRobot(0, 0, turnSpeed);
+            myOpMode.telemetry.addData("Timer: ", holdTimer.time());
+            myOpMode.telemetry.update();
+        }
+
+        // Stop all motion;
+        moveRobot(0, 0, 0);
+        myOpMode.telemetry.addLine("TImer done.");
+        myOpMode.telemetry.update();
+    }
+
+    public void strafeLeft(double directionToMove, double distance, double speed) {
+
+        // since we are strafing left, the heading (direction we need to face)
+        // is 90 degrees to the RIGHT of the direction of motion, which is given
+        // in the argument
+        double heading = directionToMove + 90;
+        // Normalize the heading to be within +/- 180 degrees
+        while (directionToMove > 180) directionToMove -= 360;
+        while (directionToMove <= -180) directionToMove += 360;
+        rotateToHeading(heading);
+
+        leftFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_STRAFING));
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontDrive.setPower(speed);
+        rightFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_STRAFING));
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setPower(speed);
+        leftBackDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_STRAFING));
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setPower(speed);
+        rightBackDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_STRAFING));
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setPower(speed);
+
+        while (leftFrontDrive.isBusy() && myOpMode.opModeIsActive()) {
+            double steeringCorrection = getSteeringCorrection(heading, P_DRIVE_GAIN);
+            leftFrontDrive.setPower(speed + steeringCorrection);
+            rightFrontDrive.setPower(speed - steeringCorrection);
+            leftBackDrive.setPower(speed + steeringCorrection);
+            rightBackDrive.setPower(speed - steeringCorrection);
+            myOpMode.sleep(20);
+        }
+
+    }
+
+    public void rotateToHeading(double heading) {
+        double steeringCorrection = getSteeringCorrection(heading, P_TURN_GAIN);
+        myOpMode.telemetry.addData("Steering Correction:", steeringCorrection);
+        myOpMode.telemetry.update();
+        myOpMode.sleep(500);
+
+        while (myOpMode.opModeIsActive() && steeringCorrection > 5) {
+            moveRobot(0, 0, steeringCorrection);
+            myOpMode.sleep(20);
+            steeringCorrection = getSteeringCorrection(heading, P_TURN_GAIN);
+        }
+        moveRobot(0,0,0);
+    }
+
+    private boolean checkForObstacle() {
+        double distanceSensorReading = distanceSensor.getDistance(DistanceUnit.INCH);
+        return distanceSensorReading < 3.0;
     }
 }

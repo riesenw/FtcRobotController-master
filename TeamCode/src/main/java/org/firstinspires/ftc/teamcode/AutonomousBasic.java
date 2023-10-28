@@ -1,4 +1,4 @@
-/* Copyright (c) 2021 FIRST. All rights reserved.
+/* Copyright (c) 2022 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted (subject to the limitations in the disclaimer below) provided that
@@ -29,66 +29,22 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.RobotHardware;
 
+@Autonomous(name="Basic Autonomous", group="Autonomous")
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
-public class TeleOp extends LinearOpMode {
-    org.firstinspires.ftc.teamcode.RobotHardware robot = new org.firstinspires.ftc.teamcode.RobotHardware(this);
+public class AutonomousBasic extends LinearOpMode {
+
+    public org.firstinspires.ftc.teamcode.RobotHardware robot = new org.firstinspires.ftc.teamcode.RobotHardware(this);
 
     @Override
-    public void runOpMode() {
-
+    public void runOpMode() throws InterruptedException {
         robot.init();
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
         waitForStart();
-
-        while (opModeIsActive()) {
-
-            boolean turbo = gamepad1.options;
-            if (turbo) {
-                robot.MAX_DRIVE_SPEED = 0.75;
-            } else {
-                robot.MAX_DRIVE_SPEED = 0.5;
-            }
-
-            if (gamepad2.circle) {
-                robot.setSweeperOn(true);
-            }
-            if (gamepad2.cross) {
-                robot.setSweeperOn(false);
-            }
-
-
-            if (gamepad2.dpad_left) {
-                robot.moveArmToPickupPosition();
-            }
-            if (gamepad2.dpad_up) {
-                robot.moveArmToCarryPosition();
-            }
-            if (gamepad2.dpad_right) {
-                robot.moveArmToFlipPosition();
-            }
-
-            double axial = -gamepad1.left_stick_y;
-            double lateral = -gamepad1.left_stick_x;
-            double yaw = -gamepad1.right_stick_x;
-            robot.moveRobot(axial, lateral, yaw);
-
-       //     double Arm = gamepad2.left_stick_y;
-            double Intake = gamepad2.right_stick_x;
-
-            robot.setSweeperPower(gamepad2.right_stick_x);
-          //  robot.setArmPower(gamepad2.left_stick_y);
-
-            if(gamepad2.circle){
-                robot.deployPixel();
-            }
-
-        }
+//        robot.searchForward(5000, 0.25);
+//        robot.deployPixel();
+//        sleep(30000);
     }
 }
