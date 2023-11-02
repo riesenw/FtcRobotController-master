@@ -35,10 +35,12 @@ public class RobotHardware {
     public static final int PICKUP_POSITION = 75;
     public static final int CARRY_POSITION = 0;
     public static final int FLIP_POSITION = -200;
-    public double MAX_DRIVE_SPEED = 0.5;
+    public double maxDriveSpeed = 0.1;
     private static final double STEERING_CORRECTION = 0.01;
     static final double COUNTS_PER_INCH_DRIVING = 96;
     static final double COUNTS_PER_INCH_STRAFING = 1;
+    static final double AXIAL_REDUCTION_FACTOR = 0.3;
+    static final double ODD_WHEEL_MULTIPLIER = 2.67;
 
     // Define the Proportional control coefficient (or GAIN) for "heading control".
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
@@ -118,6 +120,8 @@ public class RobotHardware {
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        double correctedAxial = axial * AXIAL_REDUCTION_FACTOR;
+
         // Calculate wheel powers.
         double leftFrontPower = axial - lateral - yaw;
         double rightFrontPower = axial + lateral + yaw;
@@ -129,8 +133,7 @@ public class RobotHardware {
         max = Math.max(max, Math.abs(leftBackPower));
         max = Math.max(max, Math.abs(rightBackPower));
 
-        if (max > 0.75) {
-            //     if (max > MAX_DRIVE_SPEED) {
+        if (max > maxDriveSpeed) {
             leftFrontPower /= max;
             rightFrontPower /= max;
             leftBackPower /= max;
@@ -139,7 +142,7 @@ public class RobotHardware {
 
         // Send powers to the wheels.
         leftFrontDrive.setPower(leftFrontPower);
-        rightFrontDrive.setPower(rightFrontPower);
+        rightFrontDrive.setPower(rightFrontPower * ODD_WHEEL_MULTIPLIER);
         leftBackDrive.setPower(leftBackPower);
         rightBackDrive.setPower(rightBackPower);
     }

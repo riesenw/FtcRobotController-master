@@ -31,8 +31,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.RobotHardware;
-
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends LinearOpMode {
@@ -51,9 +49,9 @@ public class TeleOp extends LinearOpMode {
 
             boolean turbo = gamepad1.options;
             if (turbo) {
-                robot.MAX_DRIVE_SPEED = 0.75;
+                robot.maxDriveSpeed = 0.2;
             } else {
-                robot.MAX_DRIVE_SPEED = 0.5;
+                robot.maxDriveSpeed = 0.4;
             }
 
             if (gamepad2.circle) {
