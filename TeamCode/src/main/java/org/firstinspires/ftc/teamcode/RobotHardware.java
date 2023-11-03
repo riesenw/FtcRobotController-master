@@ -17,7 +17,6 @@ public class RobotHardware {
 
 
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
-
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -26,7 +25,6 @@ public class RobotHardware {
     private DcMotor sweeper = null;
     private Servo pixelRelease = null;
     private ColorRangeSensor distanceSensor = null;
-
     private IMU imu = null;
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
@@ -35,12 +33,12 @@ public class RobotHardware {
     public static final int PICKUP_POSITION = 75;
     public static final int CARRY_POSITION = 0;
     public static final int FLIP_POSITION = -200;
-    public double maxDriveSpeed = 0.1;
+//    public double maxDriveSpeed = 0.1;
     private static final double STEERING_CORRECTION = 0.01;
     static final double COUNTS_PER_INCH_DRIVING = 96;
     static final double COUNTS_PER_INCH_STRAFING = 1;
-    static final double AXIAL_REDUCTION_FACTOR = 0.3;
-    static final double ODD_WHEEL_MULTIPLIER = 2.67;
+//    static final double AXIAL_REDUCTION_FACTOR = 0.3;
+    static final double ODD_WHEEL_MULTIPLIER = 2.67;  //corrects for one wheel having different gear ratio
 
     // Define the Proportional control coefficient (or GAIN) for "heading control".
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
@@ -120,7 +118,7 @@ public class RobotHardware {
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double correctedAxial = axial * AXIAL_REDUCTION_FACTOR;
+//        double correctedAxial = axial * AXIAL_REDUCTION_FACTOR;
 
         // Calculate wheel powers.
         double leftFrontPower = axial - lateral - yaw;
@@ -128,12 +126,12 @@ public class RobotHardware {
         double leftBackPower = axial + lateral - yaw;
         double rightBackPower = axial - lateral + yaw;
 
-        // Normalize wheel powers to be less than 1.0
+        // Normalize wheel powers to be less than maxDriveSpeed
         double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         max = Math.max(max, Math.abs(leftBackPower));
         max = Math.max(max, Math.abs(rightBackPower));
 
-        if (max > maxDriveSpeed) {
+        if (max > 1.0) {
             leftFrontPower /= max;
             rightFrontPower /= max;
             leftBackPower /= max;

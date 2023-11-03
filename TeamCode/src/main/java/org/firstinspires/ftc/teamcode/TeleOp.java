@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends LinearOpMode {
     org.firstinspires.ftc.teamcode.RobotHardware robot = new org.firstinspires.ftc.teamcode.RobotHardware(this);
+    double turboBoostFactor = 1.0;
+    double joystickSensitivity = 0.25;
 
     @Override
     public void runOpMode() {
@@ -47,11 +49,11 @@ public class TeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            boolean turbo = gamepad1.options;
-            if (turbo) {
-                robot.maxDriveSpeed = 0.2;
+            if (gamepad1.options) {
+                turboBoostFactor = 2.0;
+                gamepad1.rumble(100);
             } else {
-                robot.maxDriveSpeed = 0.4;
+                turboBoostFactor = 1.0;
             }
 
             if (gamepad2.circle) {
@@ -72,9 +74,9 @@ public class TeleOp extends LinearOpMode {
                 robot.moveArmToFlipPosition();
             }
 
-            double axial = -gamepad1.left_stick_y;
-            double lateral = -gamepad1.left_stick_x;
-            double yaw = -gamepad1.right_stick_x;
+            double axial = -gamepad1.left_stick_y * joystickSensitivity;
+            double lateral = -gamepad1.left_stick_x * joystickSensitivity;
+            double yaw = -gamepad1.right_stick_x * joystickSensitivity;
             robot.moveRobot(axial, lateral, yaw);
 
        //     double Arm = gamepad2.left_stick_y;
