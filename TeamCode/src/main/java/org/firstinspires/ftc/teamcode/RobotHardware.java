@@ -35,7 +35,7 @@ public class RobotHardware {
     public static final int FLIP_POSITION = -200;
 //    public double maxDriveSpeed = 0.1;
     private static final double STEERING_CORRECTION = 0.01;
-    static final double COUNTS_PER_INCH_DRIVING = 96;
+    static final double COUNTS_PER_INCH_DRIVING = 31;
     static final double COUNTS_PER_INCH_STRAFING = 1;
 //    static final double AXIAL_REDUCTION_FACTOR = 0.3;
     static final double ODD_WHEEL_MULTIPLIER = 2.67;  //corrects for one wheel having different gear ratio
@@ -45,7 +45,7 @@ public class RobotHardware {
     // Increase these numbers if the heading does not corrects strongly enough (eg: a heavy robot or using tracks)
     // Decrease these numbers if the heading does not settle on the correct value (eg: very agile robot with omni wheels)
     static final double P_TURN_GAIN = 0.02;     // Larger is more responsive, but also less stable
-    static final double P_DRIVE_GAIN = 0.03;     // Larger is more responsive, but also less stable
+    static final double P_DRIVE_GAIN = 0.003;     // Larger is more responsive, but also less stable
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public RobotHardware(LinearOpMode opmode) {
@@ -270,8 +270,10 @@ public class RobotHardware {
      */
 
     private double getSteeringCorrection(double desiredHeading, double proportionalGain) {
-
-        double headingError = desiredHeading - getHeading();
+        double currentHeading = getHeading();
+        myOpMode.telemetry.addData("Heading:", currentHeading);
+        myOpMode.telemetry.update();
+        double headingError = desiredHeading - currentHeading;
 
         // Normalize the error to be within +/- 180 degrees
         while (headingError > 180) headingError -= 360;
@@ -361,16 +363,16 @@ public class RobotHardware {
         while (directionToMove <= -180) directionToMove += 360;
         double heading = directionToMove;
 
-        rotateToHeading(heading);
+//        rotateToHeading(heading);
 
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING));
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftFrontDrive.setPower(speed);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING));
+        rightFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING * ODD_WHEEL_MULTIPLIER));
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontDrive.setPower(speed);
+        rightFrontDrive.setPower(speed * ODD_WHEEL_MULTIPLIER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_DRIVING));
         leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -382,10 +384,10 @@ public class RobotHardware {
 
         while (leftFrontDrive.isBusy() && myOpMode.opModeIsActive()) {
             double steeringCorrection = getSteeringCorrection(heading, P_DRIVE_GAIN);
-            leftFrontDrive.setPower(speed + steeringCorrection);
-            rightFrontDrive.setPower(speed - steeringCorrection);
-            leftBackDrive.setPower(speed + steeringCorrection);
-            rightBackDrive.setPower(speed - steeringCorrection);
+            leftFrontDrive.setPower(speed - steeringCorrection);
+            rightFrontDrive.setPower((speed + steeringCorrection) * ODD_WHEEL_MULTIPLIER);
+            leftBackDrive.setPower(speed - steeringCorrection);
+            rightBackDrive.setPower(speed + steeringCorrection);
             myOpMode.sleep(20);
         }
     }

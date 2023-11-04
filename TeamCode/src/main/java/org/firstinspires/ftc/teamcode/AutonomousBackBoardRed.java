@@ -58,12 +58,7 @@ public class AutonomousBackBoardRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot.init();
         waitForStart();
-      robot.rotateToHeading(30);
-      telemetry.addLine("Rotation method complete.");
-      telemetry.update();
-      robot.holdHeading(30,1);
-      telemetry.addLine("Hold timer complete.");
-      telemetry.update();
+        robot.forward(Direction.AWAY_FROM_DRIVERS.heading, 36,0.1);
         sleep(30000);
     }
 }
