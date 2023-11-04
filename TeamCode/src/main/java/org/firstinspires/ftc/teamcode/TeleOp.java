@@ -74,9 +74,9 @@ public class TeleOp extends LinearOpMode {
                 robot.moveArmToFlipPosition();
             }
 
-            double axial = -gamepad1.left_stick_y * joystickSensitivity;
-            double lateral = -gamepad1.left_stick_x * joystickSensitivity;
-            double yaw = -gamepad1.right_stick_x * joystickSensitivity;
+            double axial = -gamepad1.left_stick_y * joystickSensitivity * turboBoostFactor;
+            double lateral = -gamepad1.left_stick_x * joystickSensitivity * turboBoostFactor;
+            double yaw = -gamepad1.right_stick_x * joystickSensitivity * turboBoostFactor;
             robot.moveRobot(axial, lateral, yaw);
 
        //     double Arm = gamepad2.left_stick_y;

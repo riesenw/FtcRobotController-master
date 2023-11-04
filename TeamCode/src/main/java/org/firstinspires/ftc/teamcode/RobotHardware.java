@@ -457,10 +457,12 @@ public class RobotHardware {
         myOpMode.telemetry.update();
         myOpMode.sleep(500);
 
-        while (myOpMode.opModeIsActive() && steeringCorrection > 5) {
+        while (myOpMode.opModeIsActive() && steeringCorrection > 0.1) {
             moveRobot(0, 0, steeringCorrection);
             myOpMode.sleep(20);
             steeringCorrection = getSteeringCorrection(heading, P_TURN_GAIN);
+            myOpMode.telemetry.addData("Steering Correction:", steeringCorrection);
+            myOpMode.telemetry.update();
         }
         moveRobot(0,0,0);
     }

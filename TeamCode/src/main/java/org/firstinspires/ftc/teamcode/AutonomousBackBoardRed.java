@@ -61,7 +61,9 @@ public class AutonomousBackBoardRed extends LinearOpMode {
       robot.rotateToHeading(30);
       telemetry.addLine("Rotation method complete.");
       telemetry.update();
+      robot.holdHeading(30,1);
+      telemetry.addLine("Hold timer complete.");
+      telemetry.update();
         sleep(30000);
-
     }
 }
