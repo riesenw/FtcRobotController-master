@@ -36,7 +36,7 @@ public class RobotHardware {
 //    public double maxDriveSpeed = 0.1;
     private static final double STEERING_CORRECTION = 0.01;
     static final double COUNTS_PER_INCH_DRIVING = 31;
-    static final double COUNTS_PER_INCH_STRAFING = 1;
+    static final double COUNTS_PER_INCH_STRAFING = 31;
 //    static final double AXIAL_REDUCTION_FACTOR = 0.3;
     static final double ODD_WHEEL_MULTIPLIER = 2.67;  //corrects for one wheel having different gear ratio
 
@@ -429,23 +429,28 @@ public class RobotHardware {
         while (directionToMove <= -180) directionToMove += 360;
         rotateToHeading(heading);
 
-        leftFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_STRAFING));
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontDrive.setTargetPosition((int) ( - distance * COUNTS_PER_INCH_STRAFING));
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftFrontDrive.setPower(speed);
-        rightFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_STRAFING));
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setTargetPosition((int) ( distance *
+                COUNTS_PER_INCH_STRAFING * ODD_WHEEL_MULTIPLIER));
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontDrive.setPower(speed);
+        rightFrontDrive.setPower(speed * ODD_WHEEL_MULTIPLIER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_STRAFING));
         leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftBackDrive.setPower(speed);
-        rightBackDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_STRAFING));
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setTargetPosition((int) ( - distance * COUNTS_PER_INCH_STRAFING));
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackDrive.setPower(speed);
 
         while (leftFrontDrive.isBusy() && myOpMode.opModeIsActive()) {
             double steeringCorrection = getSteeringCorrection(heading, P_DRIVE_GAIN);
             leftFrontDrive.setPower(speed + steeringCorrection);
-            rightFrontDrive.setPower(speed - steeringCorrection);
+            rightFrontDrive.setPower((speed - steeringCorrection) * ODD_WHEEL_MULTIPLIER);
             leftBackDrive.setPower(speed + steeringCorrection);
             rightBackDrive.setPower(speed - steeringCorrection);
             myOpMode.sleep(20);
