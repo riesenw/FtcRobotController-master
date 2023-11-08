@@ -58,8 +58,12 @@ public class AutonomousBackBoardRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot.init();
         waitForStart();
-        robot.forward(Direction.AWAY_FROM_DRIVERS.heading, 36,0.2);
-        robot.strafeLeft(Direction.AWAY_FROM_AUDIENCE.heading, 12,0.2);
+        robot.forward(Direction.AWAY_FROM_DRIVERS.heading, 24,0.1);
+        sleep(1000);
+        robot.backUp(Direction.TOWARD_DRIVERS.heading, 24,0.1);
+        sleep(1000);
+        robot.strafeLeft(Direction.TOWARD_AUDIENCE.heading, 12,0.1);
+        robot.deployPixel();
         sleep(30000);
     }
 }
