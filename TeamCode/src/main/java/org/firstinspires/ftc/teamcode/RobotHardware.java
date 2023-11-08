@@ -38,7 +38,7 @@ public class RobotHardware {
     static final double COUNTS_PER_INCH_DRIVING = 31;
     static final double COUNTS_PER_INCH_STRAFING = 37;
 //    static final double AXIAL_REDUCTION_FACTOR = 0.3;
-    static final double ODD_WHEEL_MULTIPLIER = 2.67;  //corrects for one wheel having different gear ratio
+    static final double ODD_WHEEL_MULTIPLIER = 1.0; // 2.67;  //corrects for one wheel having different gear ratio
 
     // Define the Proportional control coefficient (or GAIN) for "heading control".
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
@@ -357,12 +357,14 @@ public class RobotHardware {
         }
     }
 
-    public void forward(double directionToMove, double distance, double speed) {
+    public boolean forward(double directionToMove, double distance, double speed) {
 
         // Normalize the travel direction given to be within +/- 180 degrees
         while (directionToMove > 180) directionToMove -= 360;
         while (directionToMove <= -180) directionToMove += 360;
         double heading = directionToMove;
+
+        boolean objectDetected = false;
 
 //        rotateToHeading(heading);
 
@@ -389,8 +391,18 @@ public class RobotHardware {
             rightFrontDrive.setPower((speed + steeringCorrection) * ODD_WHEEL_MULTIPLIER);
             leftBackDrive.setPower(speed - steeringCorrection);
             rightBackDrive.setPower(speed + steeringCorrection);
+
+            double objectDistance = distanceSensor.getDistance(DistanceUnit.INCH);
+            if (Double.isFinite(objectDistance) && objectDistance < 3.0){
+                objectDetected = true;
+            };
+
+            myOpMode.telemetry.addData("Object detected?:", objectDetected);
+            myOpMode.telemetry.update();
+
             myOpMode.sleep(20);
         }
+        return objectDetected;
     }
 
     public void holdHeading(double heading, double holdTime) {
