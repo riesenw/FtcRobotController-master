@@ -24,12 +24,18 @@ public class RobotHardware {
     private DcMotor arm = null;
     private DcMotor sweeper = null;
     private Servo pixelRelease = null;
+    private Servo launchAirPlane = null;
     private ColorRangeSensor distanceSensor = null;
     private IMU imu = null;
+
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
     public static final double PIXEL_CARRY_POSITION = 0.0;
     public static final double PIXEL_RELEASE_POSITION = 10;
+
+    public static final double AIR_PLANE_CARRY_POSITION = 0.0;
+    public static final double AIR_PLANE_LAUNCH_POSITION = 0.30;
+
     public static final int PICKUP_POSITION = 75;
     public static final int CARRY_POSITION = 0;
     public static final int FLIP_POSITION = -200;
@@ -62,6 +68,7 @@ public class RobotHardware {
         sweeper = myOpMode.hardwareMap.get(DcMotor.class, "sweeper");
 
         pixelRelease = myOpMode.hardwareMap.get(Servo.class, "pixel_release");
+        launchAirPlane = myOpMode.hardwareMap.get(Servo.class, "drone_launch");
 
         distanceSensor = myOpMode.hardwareMap.get(ColorRangeSensor.class, "distance_sensor");
 
@@ -95,13 +102,16 @@ public class RobotHardware {
 
         pixelRelease.setPosition(PIXEL_CARRY_POSITION);
 
+        launchAirPlane.setPosition(AIR_PLANE_CARRY_POSITION);
+
+
         /* The next two lines define Hub orientation.
          * The Default Orientation (shown) is when a hub is mounted horizontally with the printed logo pointing UP and the USB port pointing FORWARD.
          *
          * To Do:  EDIT these two lines to match YOUR mounting configuration.
          */
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
+        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.DOWN;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
         // Now initialize the IMU with this mounting orientation
@@ -156,6 +166,11 @@ public class RobotHardware {
         pixelRelease.setPosition(PIXEL_CARRY_POSITION);  // reset for next match
     }
 
+    public void lauchAirPlane() {
+        launchAirPlane.setPosition(AIR_PLANE_LAUNCH_POSITION );
+        myOpMode.sleep(500);
+        launchAirPlane.setPosition(AIR_PLANE_CARRY_POSITION); // reset for next launch
+    }
 
     public void setSweeperOn(boolean on) {
         if (on) {
@@ -165,6 +180,17 @@ public class RobotHardware {
             sweeper.setPower(0.0);
         }
     }
+
+    public void setUnjamSweeperOn(boolean on) {
+        if (on) {
+            double SWEEPER_POWER = 0.5;
+            sweeper.setPower(SWEEPER_POWER);
+        } else {
+            sweeper.setPower(0.0);
+        }
+    }
+
+
 
     public void setSweeperPower(double power) {
         sweeper.setPower(power);
@@ -532,5 +558,57 @@ public class RobotHardware {
     private boolean checkForObstacle() {
         double distanceSensorReading = distanceSensor.getDistance(DistanceUnit.INCH);
         return distanceSensorReading < 3.0;
+    }
+
+    public void placePixelOnBoard(){
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        while (distanceSensor.getDistance(DistanceUnit.INCH)> 6.0){
+            leftFrontDrive.setPower(0.2);
+            leftBackDrive.setPower(0.2);
+            rightFrontDrive.setPower(0.2);
+            rightBackDrive.setPower(0.2);
+        }
+        leftFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        rightBackDrive.setPower(0);
+        moveArmToFlipPosition();
+        myOpMode.sleep(4000);
+    }
+
+    public void basicForward(double distance, double speed){
+
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFrontDrive.setTargetPosition((int) (distance/COUNTS_PER_INCH_DRIVING));
+        leftBackDrive.setTargetPosition((int)(distance/COUNTS_PER_INCH_DRIVING));
+        rightFrontDrive.setTargetPosition((int)(distance/COUNTS_PER_INCH_DRIVING));
+        rightBackDrive.setTargetPosition((int)(distance/COUNTS_PER_INCH_DRIVING));
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFrontDrive.setPower(0.2);
+        leftBackDrive.setPower(0.2);
+        rightFrontDrive.setPower(0.2);
+        rightBackDrive.setPower(0.2);
+
+//        while (leftFrontDrive.isBusy()
+//
+//        }
+//
+//        leftFrontDrive.setPower(0);
+//        leftBackDrive.setPower(0);
+//        rightFrontDrive.setPower(0);
+//        rightBackDrive.setPower(0);
+
     }
 }
