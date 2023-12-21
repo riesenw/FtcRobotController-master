@@ -50,7 +50,7 @@ public class RobotHardware {
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
     // Increase these numbers if the heading does not corrects strongly enough (eg: a heavy robot or using tracks)
     // Decrease these numbers if the heading does not settle on the correct value (eg: very agile robot with omni wheels)
-    static final double P_TURN_GAIN = 0.02;     // Larger is more responsive, but also less stable
+    static final double P_TURN_GAIN = 0.003;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_GAIN = 0.003;     // Larger is more responsive, but also less stable
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
@@ -545,7 +545,7 @@ public class RobotHardware {
         myOpMode.telemetry.update();
         myOpMode.sleep(500);
 
-        while (myOpMode.opModeIsActive() && steeringCorrection > 0.1) {
+        while (myOpMode.opModeIsActive() && steeringCorrection > 0.01) {
             moveRobot(0, 0, steeringCorrection);
             myOpMode.sleep(20);
             steeringCorrection = getSteeringCorrection(heading, P_TURN_GAIN);
