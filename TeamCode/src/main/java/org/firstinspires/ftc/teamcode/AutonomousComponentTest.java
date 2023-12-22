@@ -57,19 +57,31 @@ public class AutonomousComponentTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot.init();
         waitForStart();
+//        robot.autoDriveToTarget(4);
+
+
+
+        boolean objectDetected =
+                robot.forward(Direction.AWAY_FROM_DRIVERS.heading, 14, 0.2);
         robot.rotateToHeading(Direction.TOWARD_AUDIENCE.heading);
         sleep(1000);
+        objectDetected =
+                robot.forward(Direction.TOWARD_AUDIENCE.heading, 14, 0.2);
         robot.rotateToHeading(Direction.TOWARD_DRIVERS.heading);
         sleep(1000);
+        objectDetected =
+                robot.forward(Direction.TOWARD_DRIVERS.heading, 14, 0.2);
         robot.rotateToHeading(Direction.AWAY_FROM_AUDIENCE.heading);
         sleep(1000);
+        objectDetected =
+                robot.forward(Direction.AWAY_FROM_AUDIENCE.heading, 14, 0.2);
         robot.rotateToHeading(Direction.AWAY_FROM_DRIVERS.heading);
         sleep(1000);
 
 
 //        robot.strafeRight(Direction.AWAY_FROM_AUDIENCE.heading, 8,0.1);
 //        boolean objectDetected =
-//                robot.forward(Direction.AWAY_FROM_DRIVERS.heading, 28, 0.1);
+//                robot.forward(Direction.AWAY_FROM_DRIVERS.heading, 28, 0.2);
 //        sleep(500);
 //        if (objectDetected) {
 //            robot.deployPixel();

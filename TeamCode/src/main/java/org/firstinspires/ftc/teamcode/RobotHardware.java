@@ -9,11 +9,38 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class RobotHardware {
+
+    //  This section initializes variables and constants pertaining to camera-based navigation.
+    private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
+    private VisionPortal visionPortal;               // Used to manage the video source.
+    private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
+    private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
+    // Adjust these numbers to suit your robot.
+    final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
+    //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
+    //  applied to the drive motors to correct the error.
+    //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
+    final double SPEED_GAIN = 0.02;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    final double STRAFE_GAIN = 0.015;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+    final double TURN_GAIN = 0.01;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+    final double MAX_AUTO_STRAFE = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
 
 
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
@@ -39,11 +66,11 @@ public class RobotHardware {
     public static final int PICKUP_POSITION = 75;
     public static final int CARRY_POSITION = 0;
     public static final int FLIP_POSITION = -200;
-//    public double maxDriveSpeed = 0.1;
+    //    public double maxDriveSpeed = 0.1;
     private static final double STEERING_CORRECTION = 0.01;
     static final double COUNTS_PER_INCH_DRIVING = 31;
     static final double COUNTS_PER_INCH_STRAFING = 37;
-//    static final double AXIAL_REDUCTION_FACTOR = 0.3;
+    //    static final double AXIAL_REDUCTION_FACTOR = 0.3;
     static final double ODD_WHEEL_MULTIPLIER = 1.0; // 2.67;  //corrects for one wheel having different gear ratio
 
     // Define the Proportional control coefficient (or GAIN) for "heading control".
@@ -118,6 +145,12 @@ public class RobotHardware {
         imu.initialize(new IMU.Parameters(orientationOnRobot));
         imu.resetYaw();
 
+        // Initialize the Apriltag Detection process
+        initAprilTag();
+
+        if (USE_WEBCAM)
+            setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
+
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
     }
@@ -167,7 +200,7 @@ public class RobotHardware {
     }
 
     public void lauchAirPlane() {
-        launchAirPlane.setPosition(AIR_PLANE_LAUNCH_POSITION );
+        launchAirPlane.setPosition(AIR_PLANE_LAUNCH_POSITION);
         myOpMode.sleep(500);
         launchAirPlane.setPosition(AIR_PLANE_CARRY_POSITION); // reset for next launch
     }
@@ -189,7 +222,6 @@ public class RobotHardware {
             sweeper.setPower(0.0);
         }
     }
-
 
 
     public void setSweeperPower(double power) {
@@ -419,9 +451,10 @@ public class RobotHardware {
             rightBackDrive.setPower(speed + steeringCorrection);
 
             double objectDistance = distanceSensor.getDistance(DistanceUnit.INCH);
-            if (Double.isFinite(objectDistance) && objectDistance < 3.0){
+            if (Double.isFinite(objectDistance) && objectDistance < 3.0) {
                 objectDetected = true;
-            };
+            }
+            ;
 
             myOpMode.telemetry.addData("Object detected?:", objectDetected);
             myOpMode.telemetry.update();
@@ -469,11 +502,11 @@ public class RobotHardware {
 //        rotateToHeading(heading);
 
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontDrive.setTargetPosition((int) ( - distance * COUNTS_PER_INCH_STRAFING));
+        leftFrontDrive.setTargetPosition((int) (-distance * COUNTS_PER_INCH_STRAFING));
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftFrontDrive.setPower(speed);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setTargetPosition((int) ( distance *
+        rightFrontDrive.setTargetPosition((int) (distance *
                 COUNTS_PER_INCH_STRAFING * ODD_WHEEL_MULTIPLIER));
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontDrive.setPower(speed * ODD_WHEEL_MULTIPLIER);
@@ -482,7 +515,7 @@ public class RobotHardware {
         leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftBackDrive.setPower(speed);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setTargetPosition((int) ( - distance * COUNTS_PER_INCH_STRAFING));
+        rightBackDrive.setTargetPosition((int) (-distance * COUNTS_PER_INCH_STRAFING));
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackDrive.setPower(speed);
 
@@ -510,20 +543,20 @@ public class RobotHardware {
 //        rotateToHeading(heading);
 
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontDrive.setTargetPosition((int) (  distance * COUNTS_PER_INCH_STRAFING));
+        leftFrontDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_STRAFING));
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftFrontDrive.setPower(speed);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setTargetPosition((int) ( - distance *
+        rightFrontDrive.setTargetPosition((int) (-distance *
                 COUNTS_PER_INCH_STRAFING * ODD_WHEEL_MULTIPLIER));
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontDrive.setPower(speed * ODD_WHEEL_MULTIPLIER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setTargetPosition((int) ( - distance * COUNTS_PER_INCH_STRAFING));
+        leftBackDrive.setTargetPosition((int) (-distance * COUNTS_PER_INCH_STRAFING));
         leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftBackDrive.setPower(speed);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setTargetPosition((int) ( distance * COUNTS_PER_INCH_STRAFING));
+        rightBackDrive.setTargetPosition((int) (distance * COUNTS_PER_INCH_STRAFING));
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackDrive.setPower(speed);
 
@@ -552,7 +585,7 @@ public class RobotHardware {
             myOpMode.telemetry.addData("Steering Correction:", steeringCorrection);
             myOpMode.telemetry.update();
         }
-        moveRobot(0,0,0);
+        moveRobot(0, 0, 0);
     }
 
     private boolean checkForObstacle() {
@@ -560,12 +593,12 @@ public class RobotHardware {
         return distanceSensorReading < 3.0;
     }
 
-    public void placePixelOnBoard(){
+    public void placePixelOnBoard() {
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while (distanceSensor.getDistance(DistanceUnit.INCH)> 6.0){
+        while (distanceSensor.getDistance(DistanceUnit.INCH) > 6.0) {
             leftFrontDrive.setPower(0.2);
             leftBackDrive.setPower(0.2);
             rightFrontDrive.setPower(0.2);
@@ -579,17 +612,17 @@ public class RobotHardware {
         myOpMode.sleep(4000);
     }
 
-    public void basicForward(double distance, double speed){
+    public void basicForward(double distance, double speed) {
 
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setTargetPosition((int) (distance/COUNTS_PER_INCH_DRIVING));
-        leftBackDrive.setTargetPosition((int)(distance/COUNTS_PER_INCH_DRIVING));
-        rightFrontDrive.setTargetPosition((int)(distance/COUNTS_PER_INCH_DRIVING));
-        rightBackDrive.setTargetPosition((int)(distance/COUNTS_PER_INCH_DRIVING));
+        leftFrontDrive.setTargetPosition((int) (distance / COUNTS_PER_INCH_DRIVING));
+        leftBackDrive.setTargetPosition((int) (distance / COUNTS_PER_INCH_DRIVING));
+        rightFrontDrive.setTargetPosition((int) (distance / COUNTS_PER_INCH_DRIVING));
+        rightBackDrive.setTargetPosition((int) (distance / COUNTS_PER_INCH_DRIVING));
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -610,5 +643,125 @@ public class RobotHardware {
 //        rightFrontDrive.setPower(0);
 //        rightBackDrive.setPower(0);
 
+    }
+
+    public void autoDriveToTarget(int target_ID) {
+        boolean targetFound = false;    // Set to true when an AprilTag target is detected
+        double drive = 0;               // Desired forward power/speed (-1 to +1)
+        double strafe = 0;               // Desired strafe power/speed (-1 to +1)
+        double turn = 0;                  // Desired turning power/speed (-1 to +1)
+
+        while (myOpMode.opModeIsActive()) {
+            targetFound = false;
+            desiredTag = null;
+
+            // Step through the list of detected tags and look for a matching tag
+            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+            for (AprilTagDetection detection : currentDetections) {
+                // Look to see if we have size info on this tag.
+                if (detection.metadata != null) {
+                    //  Check to see if we want to track towards this tag.
+                    if (detection.id == target_ID) {
+                        // Yes, we want to use this tag.
+                        targetFound = true;
+                        desiredTag = detection;
+                        break;  // don't look any further.
+                    }
+                }
+            }
+
+            if (targetFound) {
+
+                // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+                double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
+                double headingError = desiredTag.ftcPose.bearing;
+                double yawError = desiredTag.ftcPose.yaw;
+
+                // Use the speed and turn "gains" to calculate how we want the robot to move.
+                drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+                turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+                strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+
+            } else {
+
+                // target lost: stop motors
+                drive = 0;
+                strafe = 0;
+                turn = 0;
+            }
+
+            // Apply desired axes motions to the drivetrain.
+            moveRobot(drive, strafe, turn);
+            myOpMode.sleep(10);
+        }
+    }
+
+    /**
+     * Initialize the AprilTag processor.
+     */
+    private void initAprilTag() {
+        // Create the AprilTag processor by using a builder.
+        aprilTag = new AprilTagProcessor.Builder().build();
+
+        // Adjust Image Decimation to trade-off detection-range for detection-rate.
+        // eg: Some typical detection data using a Logitech C920 WebCam
+        // Decimation = 1 ..  Detect 2" Tag from 10 feet away at 10 Frames per second
+        // Decimation = 2 ..  Detect 2" Tag from 6  feet away at 22 Frames per second
+        // Decimation = 3 ..  Detect 2" Tag from 4  feet away at 30 Frames Per Second
+        // Decimation = 3 ..  Detect 5" Tag from 10 feet away at 30 Frames Per Second
+        // Note: Decimation can be changed on-the-fly to adapt during a match.
+        aprilTag.setDecimation(2);
+
+        // Create the vision portal by using a builder.
+        if (USE_WEBCAM) {
+            visionPortal = new VisionPortal.Builder()
+                    .setCamera(myOpMode.hardwareMap.get(WebcamName.class, "Webcam 1"))
+                    .addProcessor(aprilTag)
+                    .build();
+        } else {
+            visionPortal = new VisionPortal.Builder()
+                    .setCamera(BuiltinCameraDirection.BACK)
+                    .addProcessor(aprilTag)
+                    .build();
+        }
+    }
+
+
+    /*
+     Manually set the camera gain and exposure.
+     This can only be called AFTER calling initAprilTag(), and only works for Webcams;
+    */
+    private void    setManualExposure(int exposureMS, int gain) {
+        // Wait for the camera to be open, then use the controls
+
+        if (visionPortal == null) {
+            return;
+        }
+
+        // Make sure camera is streaming before we try to set the exposure controls
+        if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            myOpMode.telemetry.addData("Camera", "Waiting");
+            myOpMode.telemetry.update();
+            while (!myOpMode.isStopRequested() && (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
+                myOpMode.sleep(20);
+            }
+            myOpMode.telemetry.addData("Camera", "Ready");
+            myOpMode.telemetry.update();
+        }
+
+        // Set camera controls unless we are stopping.
+        if (!myOpMode.isStopRequested())
+        {
+            ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+            if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
+                exposureControl.setMode(ExposureControl.Mode.Manual);
+                myOpMode.sleep(50);
+            }
+            exposureControl.setExposure((long)exposureMS, TimeUnit.MILLISECONDS);
+            myOpMode.sleep(20);
+            GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
+            gainControl.setGain(gain);
+            myOpMode.sleep(20);
+        }
     }
 }
