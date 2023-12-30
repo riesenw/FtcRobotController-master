@@ -4,6 +4,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -105,6 +106,7 @@ public class RobotHardware {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -578,7 +580,7 @@ public class RobotHardware {
         myOpMode.telemetry.update();
         myOpMode.sleep(500);
 
-        while (myOpMode.opModeIsActive() && steeringCorrection > 0.01) {
+        while (myOpMode.opModeIsActive() && Math.abs(steeringCorrection) > 0.01) {
             moveRobot(0, 0, steeringCorrection);
             myOpMode.sleep(20);
             steeringCorrection = getSteeringCorrection(heading, P_TURN_GAIN);
@@ -634,14 +636,13 @@ public class RobotHardware {
         rightFrontDrive.setPower(0.2);
         rightBackDrive.setPower(0.2);
 
-//        while (leftFrontDrive.isBusy()
-//
-//        }
+//        while (leftFrontDrive.isBusy();
 //
 //        leftFrontDrive.setPower(0);
 //        leftBackDrive.setPower(0);
 //        rightFrontDrive.setPower(0);
 //        rightBackDrive.setPower(0);
+//
 
     }
 

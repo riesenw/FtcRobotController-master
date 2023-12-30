@@ -33,10 +33,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name = "Autonomous Red Backboard", group = "Autonomous")
+@Autonomous(name = "Autonomous Red Backboard Camera", group = "Autonomous")
 
 
-public class AutonomousBackBoardRed extends LinearOpMode {
+public class AutonomousBackBoardRedCamera extends LinearOpMode {
 
     public enum Direction {
         TOWARD_AUDIENCE(90),
@@ -58,14 +58,23 @@ public class AutonomousBackBoardRed extends LinearOpMode {
         robot.init();
         waitForStart();
 
+        robot.rotateToHeading(Direction.AWAY_FROM_AUDIENCE.heading);
 
         robot.strafeRight(Direction.AWAY_FROM_AUDIENCE.heading, 6,0.1);
         boolean objectDetected =
                 robot.forward(Direction.AWAY_FROM_DRIVERS.heading, 28, 0.1);
         sleep(500);
         if (objectDetected) {
+            //We now know randomization was to the RIGHT position.
             robot.deployPixel();
             robot.backUp(Direction.TOWARD_DRIVERS.heading, 8,0.1);
+            telemetry.addLine("Starting Rotation");
+            robot.rotateToHeading(Direction.AWAY_FROM_AUDIENCE.heading);
+            telemetry.addLine("Ending Rotation");
+            telemetry.addData("OpMode Active:", opModeIsActive());
+            telemetry.update();
+
+            sleep(5000);
 
 
         } else {

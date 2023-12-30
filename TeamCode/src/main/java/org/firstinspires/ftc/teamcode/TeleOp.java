@@ -49,8 +49,15 @@ public class TeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if (gamepad1.options) {
+            if (gamepad1.right_bumper) {
                 turboBoostFactor = 2.0;
+                gamepad1.rumble(100);
+            } else {
+                turboBoostFactor = 1.0;
+            }
+
+            if (gamepad1.left_bumper) {
+                turboBoostFactor = 4.0;
                 gamepad1.rumble(100);
             } else {
                 turboBoostFactor = 1.0;
@@ -62,7 +69,13 @@ public class TeleOp extends LinearOpMode {
             if (gamepad2.cross) {
                 robot.setSweeperOn(false);
             }
+            if (gamepad2.square) {
+                robot.setUnjamSweeperOn(true);
+            }
 
+            if(gamepad2.triangle){
+                robot.deployPixel();
+            }
 
             if (gamepad2.dpad_left) {
                 robot.moveArmToPickupPosition();
@@ -80,13 +93,13 @@ public class TeleOp extends LinearOpMode {
             robot.moveRobot(axial, lateral, yaw);
 
        //     double Arm = gamepad2.left_stick_y;
-            double Intake = gamepad2.right_stick_x;
+//            double Intake = gamepad2.right_stick_x;
 
-            robot.setSweeperPower(gamepad2.right_stick_x);
+           // robot.setSweeperPower(gamepad2.right_stick_x);
           //  robot.setArmPower(gamepad2.left_stick_y);
 
-            if(gamepad2.circle){
-                robot.deployPixel();
+            if(gamepad1.options && gamepad2.options){
+                robot.lauchAirPlane();
             }
 
         }
