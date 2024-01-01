@@ -87,6 +87,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @TeleOp(name="Auto Drive To AprilTag", group = "Concept")
+@Disabled
 
 public class AutoDriveToTarget extends LinearOpMode
 {

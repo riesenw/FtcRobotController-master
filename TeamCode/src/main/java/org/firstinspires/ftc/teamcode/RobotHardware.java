@@ -34,13 +34,13 @@ public class RobotHardware {
     // Adjust these numbers to suit your robot.
     final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
     final double ARRIVAL_TOLERANCE = 1.0; // margin of error for determining arrival at destination (inches)
-    //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
+    //  Set the GAIN constants to control the relationsh.ip between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
-    final double SPEED_GAIN = 0.002;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    final double SPEED_GAIN = 0.01;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
     final double STRAFE_GAIN = 0.002;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
     final double TURN_GAIN = 0.01;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
-    final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+    final double MAX_AUTO_SPEED = 0.25;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_STRAFE = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_TURN = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
 
@@ -56,6 +56,8 @@ public class RobotHardware {
     private Servo launchAirPlane = null;
     private ColorRangeSensor distanceSensor = null;
     private IMU imu = null;
+
+    //
 
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
@@ -347,7 +349,7 @@ public class RobotHardware {
     /**
      * read the Robot heading directly from the IMU (in degrees)
      */
-    private double getHeading() {
+    public double getHeading() {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         return orientation.getYaw(AngleUnit.DEGREES);
     }
@@ -491,6 +493,21 @@ public class RobotHardware {
         moveRobot(0, 0, 0);
         myOpMode.telemetry.addLine("TImer done.");
         myOpMode.telemetry.update();
+    }
+
+    public void strafe(double directionToMove, double distance, double speed){
+        double currentHeading = getHeading();
+        // Normalize the currentHeading to be within +/- 180 degrees
+        while (currentHeading > 180) currentHeading -= 360;
+        while (currentHeading <= -180) currentHeading += 360;
+
+        // Normalize the directionToMove to be within +/- 180 degrees
+        while (directionToMove > 180) directionToMove -= 360;
+        while (directionToMove <= -180) directionToMove += 360;
+
+        if (directionToMove > currentHeading) strafeRight(directionToMove, distance,speed);
+        else strafeLeft(directionToMove,distance,speed);
+
     }
 
     public void strafeLeft(double directionToMove, double distance, double speed) {

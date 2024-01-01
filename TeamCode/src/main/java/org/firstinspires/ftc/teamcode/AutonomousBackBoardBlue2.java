@@ -30,11 +30,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
 @Autonomous(name = "Autonomous 2 Blue Backboard", group = "Autonomous")
-
+@Disabled
 
 public class AutonomousBackBoardBlue2 extends LinearOpMode {
 
