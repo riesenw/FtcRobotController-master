@@ -32,12 +32,13 @@ public class RobotHardware {
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
+    final double ARRIVAL_TOLERANCE = 1.0; // margin of error for determining arrival at destination (inches)
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
-    final double SPEED_GAIN = 0.02;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double STRAFE_GAIN = 0.015;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+    final double SPEED_GAIN = 0.002;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    final double STRAFE_GAIN = 0.002;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
     final double TURN_GAIN = 0.01;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_STRAFE = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
@@ -646,13 +647,15 @@ public class RobotHardware {
 
     }
 
-    public void autoDriveToTarget(int target_ID) {
+    public boolean autoDriveToTarget(int target_ID) {
         boolean targetFound = false;    // Set to true when an AprilTag target is detected
         double drive = 0;               // Desired forward power/speed (-1 to +1)
         double strafe = 0;               // Desired strafe power/speed (-1 to +1)
         double turn = 0;                  // Desired turning power/speed (-1 to +1)
+        boolean targetReached = false;
+        boolean targetLost = false;
 
-        while (myOpMode.opModeIsActive()) {
+        while (myOpMode.opModeIsActive() && !targetLost && !targetReached) {
             targetFound = false;
             desiredTag = null;
 
@@ -675,6 +678,9 @@ public class RobotHardware {
 
                 // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
                 double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
+                myOpMode.telemetry.addData("Distance to target:",rangeError);
+                myOpMode.telemetry.update();
+                targetReached = Math.abs(rangeError) < ARRIVAL_TOLERANCE;
                 double headingError = desiredTag.ftcPose.bearing;
                 double yawError = desiredTag.ftcPose.yaw;
 
@@ -685,16 +691,20 @@ public class RobotHardware {
 
             } else {
 
-                // target lost: stop motors
-                drive = 0;
-                strafe = 0;
-                turn = 0;
+                // target lost: exit method
+
+                targetLost = true;
             }
 
             // Apply desired axes motions to the drivetrain.
             moveRobot(drive, strafe, turn);
             myOpMode.sleep(10);
         }
+        drive = 0;
+        strafe = 0;
+        turn = 0;
+        moveRobot(drive, strafe, turn);
+        return targetReached;
     }
 
     /**
