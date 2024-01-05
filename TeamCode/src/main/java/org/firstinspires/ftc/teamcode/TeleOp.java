@@ -56,12 +56,12 @@ public class TeleOp extends LinearOpMode {
                 turboBoostFactor = 1.0;
             }
 
-            if (gamepad1.left_bumper) {
-                turboBoostFactor = 4.0;
-                gamepad1.rumble(100);
-            } else {
-                turboBoostFactor = 1.0;
-            }
+//            if (gamepad1.left_bumper) {
+//                turboBoostFactor = 4.0;
+//                gamepad1.rumble(100);
+//            } else {
+//                turboBoostFactor = 1.0;
+//            }
 
             if (gamepad2.circle) {
                 robot.setSweeperOn(true);

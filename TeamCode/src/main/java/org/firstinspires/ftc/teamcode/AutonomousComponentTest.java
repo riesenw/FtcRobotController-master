@@ -35,22 +35,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
 @Autonomous(name = "Auto Component Test", group = "Autonomous")
-@Disabled
+//@Disabled
 
 public class AutonomousComponentTest extends LinearOpMode {
 
-    public enum Direction {
-        TOWARD_AUDIENCE(90),
-        AWAY_FROM_AUDIENCE(-90),
-        TOWARD_DRIVERS(180),
-        AWAY_FROM_DRIVERS(0);
-
-        public final double heading;
-
-        Direction(double heading) {
-            this.heading = heading;
-        }
-    }
 
     public RobotHardware robot = new RobotHardware(this);
 
@@ -58,26 +46,34 @@ public class AutonomousComponentTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot.init();
         waitForStart();
+        robot.rotateToHeading(90);
+        sleep(3000);
+        robot.strafe(0,14, 0.1);
+        sleep(3000);
+        robot.strafe(180,14, 0.1);
+        sleep(3000);
+
+
 //        robot.autoDriveToTarget(4);
 
-
-
-        boolean objectDetected =
-                robot.forward(Direction.AWAY_FROM_DRIVERS.heading, 14, 0.2);
-        robot.rotateToHeading(Direction.TOWARD_AUDIENCE.heading);
-        sleep(1000);
-        objectDetected =
-                robot.forward(Direction.TOWARD_AUDIENCE.heading, 14, 0.2);
-        robot.rotateToHeading(Direction.TOWARD_DRIVERS.heading);
-        sleep(1000);
-        objectDetected =
-                robot.forward(Direction.TOWARD_DRIVERS.heading, 14, 0.2);
-        robot.rotateToHeading(Direction.AWAY_FROM_AUDIENCE.heading);
-        sleep(1000);
-        objectDetected =
-                robot.forward(Direction.AWAY_FROM_AUDIENCE.heading, 14, 0.2);
-        robot.rotateToHeading(Direction.AWAY_FROM_DRIVERS.heading);
-        sleep(1000);
+//
+//
+//        boolean objectDetected =
+//                robot.forward(Direction.AWAY_FROM_DRIVERS.heading, 14, 0.2);
+//        robot.rotateToHeading(Direction.TOWARD_AUDIENCE.heading);
+//        sleep(1000);
+//        objectDetected =
+//                robot.forward(Direction.TOWARD_AUDIENCE.heading, 14, 0.2);
+//        robot.rotateToHeading(Direction.TOWARD_DRIVERS.heading);
+//        sleep(1000);
+//        objectDetected =
+//                robot.forward(Direction.TOWARD_DRIVERS.heading, 14, 0.2);
+//        robot.rotateToHeading(Direction.AWAY_FROM_AUDIENCE.heading);
+//        sleep(1000);
+//        objectDetected =
+//                robot.forward(Direction.AWAY_FROM_AUDIENCE.heading, 14, 0.2);
+//        robot.rotateToHeading(Direction.AWAY_FROM_DRIVERS.heading);
+//        sleep(1000);
 
 
 //        robot.strafeRight(Direction.AWAY_FROM_AUDIENCE.heading, 8,0.1);

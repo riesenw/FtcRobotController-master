@@ -7,11 +7,11 @@ public class AutonomousMaster {
 
         // set constants specific to red or blue team assignment: blue values are the default
 
-        double TOWARD_AUDIENCE = -90;
-        double AWAY_FROM_AUDIENCE = 90;
-        double TOWARD_DRIVERS = 180;
-        double AWAY_FROM_DRIVERS = 0;
-        double ANGLE_TOWARD_BACK_CENTER = 75;
+        double TOWARD_AUDIENCE = 90;
+        double AWAY_FROM_AUDIENCE = -90;
+        double TOWARD_DRIVERS = 0;
+        double AWAY_FROM_DRIVERS = 180;
+        double ANGLE_TOWARD_BACK_CENTER = -75;
 
         double RIGHT_TARGET_ID = 1;
         double CENTER_TARGET_ID = 2;
@@ -24,7 +24,7 @@ public class AutonomousMaster {
             AWAY_FROM_AUDIENCE = -90;
             TOWARD_DRIVERS = 180;
             AWAY_FROM_DRIVERS = 0;
-            ANGLE_TOWARD_BACK_CENTER = -75;
+            ANGLE_TOWARD_BACK_CENTER = 0;
 
             RIGHT_TARGET_ID = 4;
             CENTER_TARGET_ID = 5;
@@ -36,17 +36,31 @@ public class AutonomousMaster {
 
         myOpMode.waitForStart();
 
-        robot.strafeRight(AWAY_FROM_AUDIENCE, 6, 0.1);
+        robot.strafe(AWAY_FROM_AUDIENCE, 6, 0.1);
         boolean objectDetected =
                 robot.forward(AWAY_FROM_DRIVERS, 28, 0.1);
         if (objectDetected) {
             //We now know randomization was to the RIGHT position.
             robot.deployPixel();
-            robot.backUp(TOWARD_DRIVERS, 8, 0.1);
-            robot.rotateToHeading(ANGLE_TOWARD_BACK_CENTER);
+            robot.backUp(TOWARD_DRIVERS, 11, 0.1);
             myOpMode.sleep(500);
-            boolean targetReached = robot.autoDriveToTarget(1);
+            robot.rotateToHeading(AWAY_FROM_AUDIENCE);
+//            robot.rotateToHeading(ANGLE_TOWARD_BACK_CENTER);
+            myOpMode.sleep(500);
+
+            robot.forward(TOWARD_AUDIENCE,14,0.1);
+            myOpMode.sleep(500);
+            robot.strafe(AWAY_FROM_DRIVERS,8, 0.1);
+            myOpMode.sleep(3000);
+
+
+            boolean targetReached = robot.autoDriveToTarget(4);
             // strafe two inches to the right to correct for camera not centered on robot
+
+
+            myOpMode.sleep(3000);
+
+
             robot.strafeRight(robot.getHeading()+ 90, 2.0, 0.1);
             myOpMode.sleep(1000);
             robot.moveArmToFlipPosition();
@@ -66,6 +80,7 @@ public class AutonomousMaster {
                     robot.forward(AWAY_FROM_DRIVERS, 22, 0.1);
             myOpMode.sleep(500);
             if (objectDetected) {
+                // We now know that the randomization was to center
                 robot.deployPixel();
                 robot.backUp(TOWARD_DRIVERS, 2, 0.1);
 
@@ -78,6 +93,7 @@ public class AutonomousMaster {
             }
         }
         myOpMode.sleep(30000);
+
     }
 }
 
