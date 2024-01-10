@@ -56,16 +56,16 @@ public class TeleOpVersion2 extends LinearOpMode {
                 turboBoostFactor = 1.0;
             }
 
-        //    if (gamepad2.circle) {
-        //        robot.setUnjamSweeperOn(false);
-        //        sleep(500);
-        //        robot.setSweeperOn(true);
-        //    }
-        //    if (gamepad2.square) {
-        //        robot.setSweeperOn(false);
-        //        sleep(500);
-        //        robot.setUnjamSweeperOn(true);
-        //    }
+            //    if (gamepad2.circle) {
+            //        robot.setUnjamSweeperOn(false);
+            //        sleep(500);
+            //        robot.setSweeperOn(true);
+            //    }
+            //    if (gamepad2.square) {
+            //        robot.setSweeperOn(false);
+            //        sleep(500);
+            //        robot.setUnjamSweeperOn(true);
+            //    }
 
             robot.setSweeperPower(gamepad2.left_stick_x);
 
@@ -73,7 +73,7 @@ public class TeleOpVersion2 extends LinearOpMode {
             if (gamepad2.cross) {
                 robot.setSweeperOn(false);
                 robot.setUnjamSweeperOn(false);
-         //   Stop
+                //   Stop
             }
 
 
@@ -92,20 +92,27 @@ public class TeleOpVersion2 extends LinearOpMode {
             double yaw = -gamepad1.right_stick_x * joystickSensitivity * turboBoostFactor;
             robot.moveRobot(axial, lateral, yaw);
 
-       //     double Arm = gamepad2.left_stick_y;
+            //     double Arm = gamepad2.left_stick_y;
             double Intake = gamepad2.right_stick_x;
 
-          //  robot.setSweeperPower(gamepad2.right_stick_x);
-          //  robot.setArmPower(gamepad2.left_stick_y);
+            //  robot.setSweeperPower(gamepad2.right_stick_x);
+            //  robot.setArmPower(gamepad2.left_stick_y);
 
-            if(gamepad2.triangle){
+            if (gamepad2.triangle) {
                 robot.deployPixel();
             }
 
-            if(gamepad1.options && gamepad2.options){
+            if (gamepad1.options && gamepad2.options) {
                 robot.lauchAirPlane();
             }
 
+            if (gamepad2.left_bumper) {
+
+            }
+
+            if (gamepad2.right_bumper) {
+
+            }
         }
     }
 }
