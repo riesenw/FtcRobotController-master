@@ -88,7 +88,7 @@ public class AutonomousBlue extends LinearOpMode {
 
 //            robot.strafeRight(robot.getHeading()+ 90, 2.0, 0.1);
 //            myOpMode.sleep(1000);
-            robot.strafeLeft(AWAY_FROM_DRIVERS, 1., 0.1);
+            robot.strafeLeft(TOWARD_DRIVERS, 1., 0.1);
             robot.moveArmToFlipPosition();
 //            myOpMode.telemetry.addData("Target Reached", targetReached);
 //            myOpMode.telemetry.update();
@@ -96,7 +96,7 @@ public class AutonomousBlue extends LinearOpMode {
             robot.moveArmToCarryPosition();
             sleep(1000);
             robot.backUp(TOWARD_AUDIENCE, 1, 0.1);
-            robot.strafeRight(TOWARD_DRIVERS, 14, 0.2);
+            robot.strafeLeft(TOWARD_DRIVERS, 14, 0.2);
             robot.forward(AWAY_FROM_AUDIENCE, 5, 0.1);
 
 
@@ -105,7 +105,7 @@ public class AutonomousBlue extends LinearOpMode {
         {
             robot.backUp(TOWARD_DRIVERS, 14, 0.1);
             sleep(500);
-            robot.strafeLeft(TOWARD_AUDIENCE, 8, 0.1);
+            robot.strafeRight(TOWARD_AUDIENCE, 8, 0.1);
             sleep(500);
             objectDetected =
                     robot.forward(AWAY_FROM_DRIVERS, 22, 0.1);
@@ -113,7 +113,19 @@ public class AutonomousBlue extends LinearOpMode {
             if (objectDetected) {
                 // We now know that the randomization was to center
                 robot.deployPixel();
-                robot.backUp(TOWARD_DRIVERS, 2, 0.1);
+                robot.backUp(TOWARD_DRIVERS, 10, 0.1);
+                //
+                robot.rotateToHeading(AWAY_FROM_AUDIENCE);
+                sleep(500);
+                robot.forward(AWAY_FROM_AUDIENCE, 35, 0.1);
+                sleep(500);
+                //
+                sleep(3000);
+                robot.moveArmToCarryPosition();
+                sleep(1000);
+                robot.backUp(TOWARD_AUDIENCE, 1, 0.1);
+                robot.strafeLeft(TOWARD_DRIVERS, 26, 0.2);
+                robot.forward(AWAY_FROM_AUDIENCE, 5, 0.1);
 
             } else {
                 robot.backUp(TOWARD_DRIVERS, 6.5, 0.1);

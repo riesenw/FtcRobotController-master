@@ -36,6 +36,7 @@ public class BlueBackboardChampionship  extends LinearOpMode {
                 sleep(500);
                 robot.rotateToHeading(270);
                 sleep(500);
+                robot.forward(Direction.AWAY_FROM_AUDIENCE.heading, 10, 0.1);
 //                robot.forward(Direction.AWAY_FROM_AUDIENCE);
 
 

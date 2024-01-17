@@ -251,6 +251,13 @@ public class RobotHardware {
         arm.setPower(0.1);
     }
 
+    public void suspendRobot() {
+        // rightCrane and leftCrane both move their motors together to raise both arms a certain distance
+        // allow enough time for movement to complete
+        // rightCrane and leftCrane both move the other direction to lower arm and suspend robot
+
+    }
+
     public boolean driveStraight(double maxDriveSpeed,
                                  double distance) throws InterruptedException {
 
