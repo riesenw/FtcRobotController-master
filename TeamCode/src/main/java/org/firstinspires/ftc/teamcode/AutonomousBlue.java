@@ -112,6 +112,7 @@ public class AutonomousBlue extends LinearOpMode {
             sleep(500);
             if (objectDetected) {
                 // We now know that the randomization was to center
+                robot.backUp(TOWARD_DRIVERS,1.5,0.1);
                 robot.deployPixel();
                 robot.backUp(TOWARD_DRIVERS, 10, 0.1);
                 //
@@ -120,11 +121,12 @@ public class AutonomousBlue extends LinearOpMode {
                 robot.forward(AWAY_FROM_AUDIENCE, 35, 0.1);
                 sleep(500);
                 //
+                robot.moveArmToFlipPosition();
                 sleep(3000);
                 robot.moveArmToCarryPosition();
                 sleep(1000);
                 robot.backUp(TOWARD_AUDIENCE, 1, 0.1);
-                robot.strafeLeft(TOWARD_DRIVERS, 26, 0.2);
+                robot.strafeLeft(TOWARD_DRIVERS, 15.5, 0.3);
                 robot.forward(AWAY_FROM_AUDIENCE, 5, 0.1);
 
             } else {

@@ -87,11 +87,21 @@ public class TeleOpVersion3 extends LinearOpMode {
                 robot.moveArmToFlipPosition();
             }
 
-            if (gamepad1.dpad_up) {
-
+//            if (gamepad1.dpad_up) {
+//                robot.forward()
             }
-
-            if (gamepad1.dpad_left)
+//
+//            if (gamepad1.dpad_left) {
+//                robot.strafeLeft();
+//            }
+//
+//            if (gamepad1.dpad_right) {
+//                robot.strafeRight();
+//            }
+//
+//            if (gamepad1.dpad_down) {
+//                robot.backUp();
+//            }
 
 //            double axial = -gamepad1.left_stick_y * joystickSensitivity * turboBoostFactor;
 //            double lateral = -gamepad1.left_stick_x * joystickSensitivity * turboBoostFactor;
@@ -112,4 +122,4 @@ public class TeleOpVersion3 extends LinearOpMode {
 
         }
     }
-}
+
