@@ -22,7 +22,7 @@ public class solo extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepad1.right_bumper) {
-                turboBoostFactor = 2.0;
+                turboBoostFactor = 3.0;
                 gamepad1.rumble(100);
             } else {
                 turboBoostFactor = 1.0;
