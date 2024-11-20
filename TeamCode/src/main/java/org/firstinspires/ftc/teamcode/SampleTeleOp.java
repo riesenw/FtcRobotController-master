@@ -84,7 +84,6 @@ public class SampleTeleOp extends LinearOpMode {
                 //set runmode to raw power
                     lift.setRunMode(Motor.RunMode.RawPower);
 
-
         //wait for the driver station to start
             waitForStart();
 
