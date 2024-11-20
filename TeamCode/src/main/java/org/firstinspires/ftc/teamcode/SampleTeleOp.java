@@ -44,10 +44,10 @@ public class SampleTeleOp extends LinearOpMode {
             Motor rightBack = new Motor(hardwareMap, "rightBack", Motor.GoBILDA.RPM_312);
 
         //change the braking behavior, this is mostly personal preference but I recommend leaving this unchanged.
-            frontLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            frontRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            backLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            backRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            leftFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            rightFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            leftBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            rightBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
         //initialize our mecanum drive from ftclib
             com.arcrobotics.ftclib.drivebase.MecanumDrive drive = new MecanumDrive(
@@ -141,7 +141,7 @@ public class SampleTeleOp extends LinearOpMode {
                 imuWrap -= 360 * Math.floor(0.5 + imuWrap / 360);
             //if difference between previous
                 if(Math.abs(imuWrap) > 30) {
-                    frontLeft.set(0); frontRight.set(0); backLeft.set(0); backRight.set(0);
+                    leftFront.set(0); rightFront.set(0); leftBack.set(0); rightBack.set(0);
                     //give driver feedback in the form of a short rumble if the imu has to reset because of static
                     gamepad1.rumble(500);
                     imu.initialize();
