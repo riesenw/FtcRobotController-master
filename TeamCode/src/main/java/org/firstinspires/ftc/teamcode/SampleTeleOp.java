@@ -38,10 +38,10 @@ public class SampleTeleOp extends LinearOpMode {
             imu.initialize(parameters);
 
         //initialize motors, you will need to change these parameters to match your motor setup and names.
-            Motor frontLeft = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_312);
-            Motor frontRight = new Motor(hardwareMap, "frontRight", Motor.GoBILDA.RPM_312);
-            Motor backLeft = new Motor(hardwareMap, "backLeft", Motor.GoBILDA.RPM_312);
-            Motor backRight = new Motor(hardwareMap, "backRight", Motor.GoBILDA.RPM_312);
+            Motor leftFront = new Motor(hardwareMap, "leftFront", Motor.GoBILDA.RPM_312);
+            Motor rightFront = new Motor(hardwareMap, "rightFront", Motor.GoBILDA.RPM_312);
+            Motor leftBack = new Motor(hardwareMap, "leftBack", Motor.GoBILDA.RPM_312);
+            Motor rightBack = new Motor(hardwareMap, "rightBack", Motor.GoBILDA.RPM_312);
 
         //change the braking behavior, this is mostly personal preference but I recommend leaving this unchanged.
             frontLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -51,10 +51,10 @@ public class SampleTeleOp extends LinearOpMode {
 
         //initialize our mecanum drive from ftclib
             com.arcrobotics.ftclib.drivebase.MecanumDrive drive = new MecanumDrive(
-                    frontLeft,
-                    frontRight,
-                    backLeft,
-                    backRight
+                    leftFront,
+                    rightFront,
+                    leftBack,
+                    rightBack
             );
 
         //initialize controllers
