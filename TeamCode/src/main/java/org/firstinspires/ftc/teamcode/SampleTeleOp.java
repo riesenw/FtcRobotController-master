@@ -83,7 +83,6 @@ public class SampleTeleOp extends LinearOpMode {
                     lift.setInverted(true);
                 //set runmode to raw power
                     lift.setRunMode(Motor.RunMode.RawPower);
-//hello
 
         //wait for the driver station to start
             waitForStart();
