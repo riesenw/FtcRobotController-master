@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "Go Straight Ahead", group = "Autonomous")
@@ -46,8 +47,12 @@ public class autonomousGoAhead extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
+    private Servo clawDrive = null;
     int travelDistance = 1000;
     double speed = 0.25;
+
+
+
 
     @Override
     public void runOpMode() {
@@ -55,11 +60,20 @@ public class autonomousGoAhead extends LinearOpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        clawDrive = hardwareMap.get(Servo.class, "claw");
+
+        //open claw when init
+        clawDrive.setPosition(0.55);
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftFrontDrive.setTargetPosition(travelDistance);
         leftBackDrive.setTargetPosition(travelDistance);
@@ -75,8 +89,12 @@ public class autonomousGoAhead extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+
+
         waitForStart();
         runtime.reset();
+
+        clawDrive.setPosition(0);
 
         leftFrontDrive.setPower(speed);
         rightFrontDrive.setPower(speed);

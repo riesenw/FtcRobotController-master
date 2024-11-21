@@ -72,7 +72,6 @@ public class autonomousScorePoints extends LinearOpMode {
         armDrive2.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
-
 //        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -104,8 +103,6 @@ public class autonomousScorePoints extends LinearOpMode {
         straightDrive(-100);
 
         sleep(1000);
-
-
 
 
     }
