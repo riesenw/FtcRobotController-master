@@ -36,10 +36,10 @@ public class SampleTeleOp extends LinearOpMode {
             imu.initialize(parameters);
 
         //initialize motors, you will need to change these parameters to match your motor setup and names.
-            Motor leftFront = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_312);
-            Motor rightFront = new Motor(hardwareMap, "frontRight", Motor.GoBILDA.RPM_312);
-            Motor leftBack = new Motor(hardwareMap, "backLeft", Motor.GoBILDA.RPM_312);
-            Motor rightBack = new Motor(hardwareMap, "backRight", Motor.GoBILDA.RPM_312);
+            Motor leftFront = new Motor(hardwareMap, "leftFront", Motor.GoBILDA.RPM_312);
+            Motor rightFront = new Motor(hardwareMap, "rightFront", Motor.GoBILDA.RPM_312);
+            Motor leftBack = new Motor(hardwareMap, "leftBack", Motor.GoBILDA.RPM_312);
+            Motor rightBack = new Motor(hardwareMap, "rightBack", Motor.GoBILDA.RPM_312);
 
         //change the braking behavior, this is mostly personal preference but I recommend leaving this unchanged.
             leftFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
