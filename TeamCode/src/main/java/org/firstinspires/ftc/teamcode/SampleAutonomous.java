@@ -47,8 +47,10 @@ public class SampleAutonomous extends LinearOpMode {
         //wait for autonomous to start
         waitForStart();
 
+        //check if stop is requested
         if (isStopRequested()) return;
 
+        //run actions sequentially, so it will run each action in order
         Actions.runBlocking(
                 new SequentialAction(
                         traj1.build(),
