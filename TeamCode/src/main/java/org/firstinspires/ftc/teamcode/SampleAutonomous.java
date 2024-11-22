@@ -19,7 +19,10 @@ public class SampleAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() {
         Pose2d initialPose = new Pose2d(11.8, 61.7, Math.toRadians(90));
+
+        //initialize our roadrunner drivetrain
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+        //initialize claw and lift from our mechanisms file
         Mechanisms.Claw claw = new Mechanisms.Claw(hardwareMap);
         Mechanisms.Lift lift = new Mechanisms.Lift(hardwareMap);
 
