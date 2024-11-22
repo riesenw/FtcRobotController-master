@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -13,8 +11,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-//Call teleop so it shows up on the driver station
-@TeleOp
+//Call the teleop so it shows up on the driver station
+@TeleOp(name = "SAMPLE_TELEOP", group = "TeleOp")
 public class SampleTeleOp extends LinearOpMode {
     //can have variables and define hardware objects here, anything from here to "waitForStart();" will run in initialization.
 
@@ -38,16 +36,19 @@ public class SampleTeleOp extends LinearOpMode {
             imu.initialize(parameters);
 
         //initialize motors, you will need to change these parameters to match your motor setup and names.
-            Motor leftFront = new Motor(hardwareMap, "leftFront", Motor.GoBILDA.RPM_312);
-            Motor rightFront = new Motor(hardwareMap, "rightFront", Motor.GoBILDA.RPM_312);
-            Motor leftBack = new Motor(hardwareMap, "leftBack", Motor.GoBILDA.RPM_312);
-            Motor rightBack = new Motor(hardwareMap, "rightBack", Motor.GoBILDA.RPM_312);
+            Motor leftFront = new Motor(hardwareMap, "frontLeft", Motor.GoBILDA.RPM_312);
+            Motor rightFront = new Motor(hardwareMap, "frontRight", Motor.GoBILDA.RPM_312);
+            Motor leftBack = new Motor(hardwareMap, "backLeft", Motor.GoBILDA.RPM_312);
+            Motor rightBack = new Motor(hardwareMap, "backRight", Motor.GoBILDA.RPM_312);
 
         //change the braking behavior, this is mostly personal preference but I recommend leaving this unchanged.
             leftFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             rightFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             leftBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             rightBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        //reverse motors
+            leftFront.setInverted(true);
+            leftBack.setInverted(true);
 
         //initialize our mecanum drive from ftclib
             com.arcrobotics.ftclib.drivebase.MecanumDrive drive = new MecanumDrive(
@@ -62,27 +63,15 @@ public class SampleTeleOp extends LinearOpMode {
             GamepadEx driver2 = new GamepadEx(gamepad2);
 
 
-        //initialize servo object
-            ServoEx servo1 = new SimpleServo(
-                    hardwareMap, "servo1", 0, 355, AngleUnit.DEGREES
-            );
+        //initialize claw servo object from our mechanisms file
+            Mechanisms.Claw claw = new Mechanisms.Claw(hardwareMap);
 
+        //initialize lift motor object from our mechanimsms file
+            Mechanisms.Lift lift = new Mechanisms.Lift(hardwareMap);
 
-        //example of how to define a motor object for basic encoder-based position control
-            //initialize lift motor object, this does require an encoder
-            Motor lift = new Motor(hardwareMap, "lift", Motor.GoBILDA.RPM_30);
-            //set to true if this motor needs to be reversed
-            lift.setInverted(true);
-            //set runmode to position control
-            lift.setRunMode(Motor.RunMode.PositionControl);
+        //intialize intake motor from our mechanisms file
+            Mechanisms.Intake intake = new Mechanisms.Intake(hardwareMap);
 
-            //example of how to define a motor for raw power based control.
-                //initialize intake motor object, does not require an encoder
-                    Motor intake = new Motor(hardwareMap, "intake", Motor.GoBILDA.RPM_435);
-                //set motor direction
-                    lift.setInverted(true);
-                //set runmode to raw power
-                    lift.setRunMode(Motor.RunMode.RawPower);
 
         //wait for the driver station to start
             waitForStart();
@@ -94,39 +83,32 @@ public class SampleTeleOp extends LinearOpMode {
                 driver1.readButtons();
                 driver2.readButtons();
 
-            //example of basic servo control
+            //example of claw control
                 if (driver1.getButton(GamepadKeys.Button.A)) {
-                    servo1.setPosition(0);
+                        claw.openClaw();
                     }
                 else if (driver1.getButton(GamepadKeys.Button.B)) {
-                    servo1.setPosition(1);
+                        claw.closeClaw();
                     }
 
-            //example of basic position based motor control
+            //example of lift control
                 //can use .wasJustPressed because the lift target position only needs to change once.
                     if(driver1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
-                        lift.setTargetPosition(1000);
+                            lift.liftUp();
                         }
                     else if (driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
-                        lift.setTargetPosition(0);
+                            lift.liftDown();
                         }
 
-                /*if it's not at target position spin the motor, because it's in position based control
-                the direction and magnitude will automatically change themselves*/
-                    if (!lift.atTargetPosition()) {
-                        lift.set(0.8);
-                        }
-
-            //example of basic raw power based motor control
-
+            //example of intake control
                 //use an if else statement first so that theres a tolerance before it starts moving the motor
                     if(driver1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1) {
-                        //set the power of the motor directly to how much the trigger is pressed down
-                        intake.set(driver1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
+                            //call the spin intake forward function
+                            intake.spinForward();
                         }
                     else if(driver1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1) {
-                        //make the right trigger spin the motor in the opposite direction
-                        intake.set(-driver1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER));
+                            //call the spin intake backward function
+                            intake.spinBackward();
                         }
 
 
