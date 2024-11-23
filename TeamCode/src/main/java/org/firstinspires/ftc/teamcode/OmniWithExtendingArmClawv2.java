@@ -66,7 +66,7 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
         armDrive2 = hardwareMap.get(DcMotor.class, "arm_drive_2");
 
         clawDrive = hardwareMap.get(Servo.class, "claw");
-        clawtator = hardwareMap.get(Servo.class, "clawtator");
+        clawtator = hardwareMap.get(Servo.class, "claw_rotate");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -87,7 +87,7 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
         slideDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //claw spiny thing code defining
-        double servoTargetPosition = 0.2;
+        double servoTargetPosition = 0.75;
         double increment = 0.01;
 
         //open claw when init
@@ -176,10 +176,10 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             //claw spiny stuff
 
 
-            if (gamepad2.left_bumper) {
+            if ((gamepad2.left_bumper) && (servoTargetPosition < 0.8)) {
                 servoTargetPosition += increment;
             }
-            if (gamepad2.left_trigger > 0.1){
+            if ((gamepad2.left_trigger > 0.1) && (servoTargetPosition > 0)) {
                 servoTargetPosition -= increment;
             }
 
@@ -245,6 +245,7 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             telemetry.addData("claw position", "%4.2f", clawPosition);
             telemetry.addData("claw", gamepad2.right_trigger);
             telemetry.addLine("good");
+            telemetry.addData("set claw position", "%4.2f", servoTargetPosition);
             telemetry.update();
 
         }
