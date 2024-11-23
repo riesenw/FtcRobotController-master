@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -10,6 +13,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //Call the teleop so it shows up on the driver station
 @TeleOp(name = "SAMPLE_TELEOP", group = "TeleOp")
@@ -24,6 +30,7 @@ public class SampleTeleOp extends LinearOpMode {
     double imuValue = 0;
     double imuDifference = 0;
     double imuWrap = 0;
+    private List<Action> runningActions = new ArrayList<>();
 
     //start of opmode, inside this function will be your main while loop and initialize all hardware objects
     @Override
@@ -79,36 +86,63 @@ public class SampleTeleOp extends LinearOpMode {
     //primary while loop to call your various functions during driver control from
         while(opModeIsActive() && !isStopRequested()) {
 
+            TelemetryPacket packet = new TelemetryPacket();
+
+            // updated based on gamepads
+
+            // update running actions
+            List<Action> newActions = new ArrayList<>();
+            for (Action action : runningActions) {
+                action.preview(packet.fieldOverlay());
+                if (action.run(packet)) {
+                    newActions.add(action);
+                }
+            }
+            runningActions = newActions;
+
+
             //read controller buttons
                 driver1.readButtons();
                 driver2.readButtons();
 
             //example of claw control
                 if (driver1.getButton(GamepadKeys.Button.A)) {
-                        claw.openClaw();
+                    runningActions.add(new SequentialAction(
+                            claw.openClaw()
+                    ));
                     }
                 else if (driver1.getButton(GamepadKeys.Button.B)) {
-                        claw.closeClaw();
+                    runningActions.add(new SequentialAction(
+                            claw.closeClaw()
+                    ));
                     }
 
             //example of lift control
                 //can use .wasJustPressed because the lift target position only needs to change once.
                     if(driver1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
-                            lift.liftUp();
+                        runningActions.add(new SequentialAction(
+                                lift.liftUp()
+                        ));
                         }
                     else if (driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
-                            lift.liftDown();
+                        runningActions.add(new SequentialAction(
+                                lift.liftDown()
+                        ));
                         }
 
             //example of intake control
                 //use an if else statement first so that theres a tolerance before it starts moving the motor
                     if(driver1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1) {
                             //call the spin intake forward function
-                            intake.spinForward();
+                        runningActions.add(new SequentialAction(
+                                intake.spinForward()
+                        ));
                         }
                     else if(driver1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1) {
                             //call the spin intake backward function
-                            intake.spinBackward();
+                        runningActions.add(new SequentialAction(
+                                intake.spinBackward()
+                        ));
                         }
 
 
