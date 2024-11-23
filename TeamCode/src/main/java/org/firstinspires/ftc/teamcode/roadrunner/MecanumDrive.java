@@ -110,8 +110,6 @@ public final class MecanumDrive {
     public final VoltageSensor voltageSensor;
 
     public final LazyImu lazyImu;
-    public final GoBildaPinpointDriver odometry;
-
     public final Localizer localizer;
     public Pose2d pose;
 
@@ -231,8 +229,6 @@ public final class MecanumDrive {
 
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        odometry = hardwareMap.get(GoBildaPinpointDriver.class, "od");
-        odometry.resetPosAndIMU();
 
         lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
@@ -240,8 +236,6 @@ public final class MecanumDrive {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         // TODO: comment out the localizer you aren't using
-        //gobilda imu localizer
-        //localizer = new TwoDeadWheelLocalizer(hardwareMap, odometry.getHeading(), PARAMS.inPerTick);
         //normal localizer
         localizer = new TwoDeadWheelLocalizer(hardwareMap, lazyImu.get(), PARAMS.inPerTick);
 
