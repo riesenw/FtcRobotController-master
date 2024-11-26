@@ -7,10 +7,11 @@ import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
 public class Mechanisms {
     //class to create a claw
     public static class Claw {
+        final double CLAW_CLOSED_POSITION = 0.55;
+        final double CLAW_OPEN_POSITION = 1.0;
         private Servo claw;
         //create the claw object from hardware map
 
@@ -24,10 +25,11 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when CloseClaw is run, set the claw to closed position
-                claw.setPosition(0.55);
+                claw.setPosition(CLAW_CLOSED_POSITION);
                 return false;
             }
         }
+
         //allow the function to be able to called from other files
         public Action closeClaw() {
             return new Claw.CloseClaw();
@@ -38,10 +40,11 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when openclaw is run, set the claw to the open position
-                claw.setPosition(1.0);
+                claw.setPosition(CLAW_OPEN_POSITION);
                 return false;
             }
         }
+
         //allow the function to be able to be called from other files
         public Action openClaw() {
             return new Claw.OpenClaw();
@@ -92,6 +95,7 @@ public class Mechanisms {
                 // 3000 encoder ticks, then powers it off2
             }
         }
+
         public Action liftUp() {
             return new LiftUp();
         }
@@ -124,11 +128,15 @@ public class Mechanisms {
                 // 100 encoder ticks, then powers it off
             }
         }
-        public Action liftDown(){
+
+        public Action liftDown() {
             return new LiftDown();
         }
     }
+
     public static class Arm {
+        final int ARM_RAISED_POSITION = -2600;
+        final int ARM_LOWERED_POSITION = 0;
         private Motor armMotor;
         //create arm from hardwareMap and initialize it
 
@@ -157,8 +165,8 @@ public class Mechanisms {
                     armMotor.set(0.8);
                     initialized = true;
                 }
-                //set the target position of the lift to 3000 ticks
-                armMotor.setTargetPosition(3000);
+                //set the target position of the lift to ARM_RAISED_POSITION ticks
+                armMotor.setTargetPosition(ARM_RAISED_POSITION);
                 if (!armMotor.atTargetPosition()) {
                     // true causes the action to rerun
                     return true;
@@ -167,11 +175,12 @@ public class Mechanisms {
                     armMotor.set(0);
                     return false;
                 }
-                // overall, the action powers the lift until it surpasses
-                // 3000 encoder ticks, then powers it off2
+                // overall, the action powers the arm until it surpasses
+                // ARM_RAISED_POSITION encoder ticks, then powers it off
             }
         }
-        public Action ArmUp() {
+
+        public Action armUp() {
             return new ArmUp();
         }
 
@@ -182,8 +191,8 @@ public class Mechanisms {
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                //set the lifts target position to down position
-                armMotor.setTargetPosition(10);
+                //set the arm target position to down position
+                armMotor.setTargetPosition(ARM_LOWERED_POSITION);
                 // powers on motor, if it is not on
                 if (!initialized) {
                     armMotor.set(-0.8);
@@ -200,15 +209,17 @@ public class Mechanisms {
                     return false;
                 }
                 // overall, the action powers the arm down until it goes below
-                // 100 encoder ticks, then powers it off
+                // ARM_RAISED_POSITION encoder ticks, then powers it off
             }
         }
-        public Action ArmDown(){
+        public Action ArmDown() {
             return new ArmDown();
         }
     }
 
     public static class Slide {
+        final int SLIDE_EXTENDED_POSITION = -2200;
+        final int SLIDE_RETRACTED_POSITION = 0;
         private Motor slideMotor;
         //create lift from hardwaremap and initialize it
 
@@ -225,7 +236,7 @@ public class Mechanisms {
             slideMotor.setPositionCoefficient(0.001);
         }
 
-        public class LiftUp implements Action {
+        public class ExtendSlide implements Action {
             // checks if the lift motor has been powered on
             private boolean initialized = false;
             // actions are formatted via telemetry packets as below
@@ -237,40 +248,41 @@ public class Mechanisms {
                     slideMotor.set(0.8);
                     initialized = true;
                 }
-                //set the target position of the lift to 3000 ticks
-                slideMotor.setTargetPosition(3000);
+                //set the target position of the lift to SLIDE_EXTENDED_POSITION ticks
+                slideMotor.setTargetPosition(SLIDE_EXTENDED_POSITION);
                 if (!slideMotor.atTargetPosition()) {
                     // true causes the action to rerun
                     return true;
                 } else {
-                    // false stops action rerun and stops the lift
+                    // false stops action rerun and stops the slide
                     slideMotor.set(0);
                     return false;
                 }
                 // overall, the action powers the lift until it surpasses
-                // 3000 encoder ticks, then powers it off2
+                // SLIDE_EXTENDED_POSITION encoder ticks, then powers it off2
             }
         }
-        public Action liftUp() {
-            return new LiftUp();
+
+        public Action extendSlide() {
+            return new ExtendSlide();
         }
 
-        public class LiftDown implements Action {
+        public class RetractSlide implements Action {
             // checks if the lift motor has been powered on
             private boolean initialized = false;
             // actions are formatted via telemetry packets as below
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                //set the lifts target position to down position
-                slideMotor.setTargetPosition(10);
+                //set the slide's target position to retracted position
+                slideMotor.setTargetPosition(SLIDE_RETRACTED_POSITION);
                 // powers on motor, if it is not on
                 if (!initialized) {
                     slideMotor.set(-0.8);
                     initialized = true;
                 }
 
-                //if the lift isn't at the target position then repeat the loop
+                //if the slide isn't at the target position then repeat the loop
                 if (!slideMotor.atTargetPosition()) {
                     // true causes the action to rerun
                     return true;
@@ -279,14 +291,16 @@ public class Mechanisms {
                     slideMotor.set(0);
                     return false;
                 }
-                // overall, the action powers the lift down until it goes below
-                // 100 encoder ticks, then powers it off
+                // overall, the action powers the slide down until it goes below
+                // SLIDE_RETRACTED_POSITION encoder ticks, then powers it off
             }
         }
-        public Action liftDown(){
-            return new LiftDown();
+
+        public Action retractSlide() {
+            return new RetractSlide();
         }
     }
+
     public static class Intake {
         private Motor intake;
         //create the claw object from hardware map
@@ -312,6 +326,7 @@ public class Mechanisms {
                 return false;
             }
         }
+
         //allow the function to be able to called from other files
         public Action spinForward() {
             return new Intake.spinForward();
@@ -326,6 +341,7 @@ public class Mechanisms {
                 return false;
             }
         }
+
         //allow the function to be able to be called from other files
         public Action spinBackward() {
             return new Intake.spinBackward();
