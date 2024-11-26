@@ -30,12 +30,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
 @Autonomous(name = "Autonomous Red Backboard Camera", group = "Autonomous")
 
-
+@Disabled
 public class AutonomousBackBoardRedCamera extends LinearOpMode {
 
     public enum Direction {

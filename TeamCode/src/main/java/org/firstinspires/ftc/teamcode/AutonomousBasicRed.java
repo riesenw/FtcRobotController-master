@@ -33,9 +33,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name = "Autonomous Red", group = "Autonomous")
+@Autonomous(name = "Autonomous Basic Red", group = "Autonomous")
 
-public class AutonomousRed extends LinearOpMode {
+public class AutonomousBasicRed extends LinearOpMode {
 
 // There are only a few difference between the red side autonomous and the
 // blue side autonomous.  This opMode calls on the operations common to
@@ -70,33 +70,26 @@ public class AutonomousRed extends LinearOpMode {
         if (objectDetected) {
             //We now know randomization was to the RIGHT position.
             robot.deployPixel();
-            robot.backUp(TOWARD_DRIVERS, 9, 0.2);
+//            robot.backUp(TOWARD_DRIVERS, 9, 0.2);
+            robot.backUp(TOWARD_DRIVERS,4,0.2);
+
 //            sleep(500);
-            robot.rotateToHeading(AWAY_FROM_AUDIENCE);
-            sleep(250);
-
-            robot.forward(AWAY_FROM_AUDIENCE, 27, 0.2);
-            sleep(1000);
-//            robot.strafe(AWAY_FROM_DRIVERS,8, 0.1);
-//            myOpMode.sleep(3000);
-
-//            boolean targetReached = robot.autoDriveToTarget(6);
-            // strafe two inches to the right to correct for camera not centered on robot
-
-//            myOpMode.sleep(3000);
-
-//            robot.strafeRight(robot.getHeading()+ 90, 2.0, 0.1);
-//            myOpMode.sleep(1000);
-            robot.strafeRight(AWAY_FROM_DRIVERS, 1.5, 0.1);
-            robot.moveArmToFlipPosition();
-//            myOpMode.telemetry.addData("Target Reached", targetReached);
-//            myOpMode.telemetry.update();
-            sleep(3000);
-            robot.moveArmToCarryPosition();
-            sleep(1000);
-            robot.backUp(TOWARD_AUDIENCE, 1, 0.4);
-            robot.strafeRight(TOWARD_DRIVERS, 14.5, 0.4);
-            robot.forward(AWAY_FROM_AUDIENCE, 5, 0.2);
+//            robot.rotateToHeading(AWAY_FROM_AUDIENCE);
+//            sleep(250);
+//
+//            robot.forward(AWAY_FROM_AUDIENCE, 27, 0.2);
+//            sleep(1000);
+////
+//            robot.strafeRight(AWAY_FROM_DRIVERS, 1.5, 0.1);
+//            robot.moveArmToFlipPosition();
+////            myOpMode.telemetry.addData("Target Reached", targetReached);
+////            myOpMode.telemetry.update();
+//            sleep(3000);
+//            robot.moveArmToCarryPosition();
+//            sleep(1000);
+//            robot.backUp(TOWARD_AUDIENCE, 1, 0.4);
+//            robot.strafeRight(TOWARD_DRIVERS, 14.5, 0.4);
+//            robot.forward(AWAY_FROM_AUDIENCE, 5, 0.2);
 
             //second pixle drop location
             //......................................................................................
@@ -115,22 +108,24 @@ public class AutonomousRed extends LinearOpMode {
                 robot.backUp(TOWARD_DRIVERS,1.5,0.1);
                 robot.deployPixel();
 
-                robot.backUp(TOWARD_DRIVERS, 10, 0.4);
-                //go to backbord
-                robot.rotateToHeading(AWAY_FROM_AUDIENCE);
-                sleep(500);
-                robot.forward(AWAY_FROM_AUDIENCE, 35, 0.25);
-                sleep(125);
-                robot.strafeLeft(AWAY_FROM_DRIVERS,2,0.2);
-                sleep(500);
-                //score pixle
-                robot.moveArmToFlipPosition();
-                sleep(3000);
-                robot.moveArmToCarryPosition();
-                sleep(1000);
-                robot.backUp(TOWARD_AUDIENCE, 1, 0.4);
-                robot.strafeRight(TOWARD_DRIVERS, 18, 0.4);
-                robot.forward(AWAY_FROM_AUDIENCE, 5, 0.2);
+                robot.backUp(TOWARD_DRIVERS,30,0.2);
+
+//                robot.backUp(TOWARD_DRIVERS, 10, 0.4);
+//                //go to backbord
+//                robot.rotateToHeading(AWAY_FROM_AUDIENCE);
+//                sleep(500);
+//                robot.forward(AWAY_FROM_AUDIENCE, 35, 0.25);
+//                sleep(125);
+//                robot.strafeLeft(AWAY_FROM_DRIVERS,2,0.2);
+//                sleep(500);
+//                //score pixle
+//                robot.moveArmToFlipPosition();
+//                sleep(3000);
+//                robot.moveArmToCarryPosition();
+//                sleep(1000);
+//                robot.backUp(TOWARD_AUDIENCE, 1, 0.4);
+//                robot.strafeRight(TOWARD_DRIVERS, 18, 0.4);
+//                robot.forward(AWAY_FROM_AUDIENCE, 5, 0.2);
 
                 //..................................................................................
             } else {
@@ -147,26 +142,26 @@ public class AutonomousRed extends LinearOpMode {
                 robot.backUp(AWAY_FROM_AUDIENCE, 26, 0.4);
                 robot.rotateToHeading(AWAY_FROM_AUDIENCE);
                 sleep(250);
-                robot.forward(AWAY_FROM_AUDIENCE,21,0.3);
-                robot.strafeLeft(AWAY_FROM_DRIVERS,4,0.4);
-//                score pixle
-                sleep(250);
-                robot.moveArmToFlipPosition();
-                sleep(3000);
-                robot.moveArmToCarryPosition();
-                sleep(1000);
-                robot.backUp(TOWARD_AUDIENCE, 1, 0.4);
-                robot.strafeRight(TOWARD_DRIVERS, 19.5, 0.4);
-                robot.forward(AWAY_FROM_AUDIENCE, 4.5, 0.3);
+
+//                robot.strafeRight(TOWARD_DRIVERS,18,3);
+//                robot.forward(AWAY_FROM_AUDIENCE,21,0.3);
+//                robot.strafeLeft(AWAY_FROM_DRIVERS,4,0.4);
+////                score pixle
+//                sleep(250);
+//                robot.moveArmToFlipPosition();
+//                sleep(3000);
+//                robot.moveArmToCarryPosition();
+//                sleep(1000);
+//                robot.backUp(TOWARD_AUDIENCE, 1, 0.4);
+//                robot.strafeRight(TOWARD_DRIVERS, 19.5, 0.4);
+//                robot.forward(AWAY_FROM_AUDIENCE, 4.5, 0.3);
 
 
             }
         }
         sleep(30000);
 
-        }
+    }
 
 }
-
-
 

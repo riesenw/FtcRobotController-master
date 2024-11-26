@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
 @Autonomous(name = "Auto Component Test", group = "Autonomous")
-//@Disabled
+@Disabled
 
 public class AutonomousComponentTest extends LinearOpMode {
 

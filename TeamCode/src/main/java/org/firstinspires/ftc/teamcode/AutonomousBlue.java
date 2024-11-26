@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name = "Autonomous BLue", group = "Autonomous")
+@Autonomous(name = "Autonomous Blue", group = "Autonomous")
 
 public class AutonomousBlue extends LinearOpMode {
 
@@ -49,13 +49,11 @@ public class AutonomousBlue extends LinearOpMode {
         // set constants specific to red or blue team assignment: blue values are the default
 
 
-        double TOWARD_AUDIENCE = -90;
-        double AWAY_FROM_AUDIENCE = 90;
-        double TOWARD_DRIVERS = 180;
-        double AWAY_FROM_DRIVERS = 0;
+        double TOWARD_AUDIENCE = 90;
+        double AWAY_FROM_AUDIENCE = -90;
+        double TOWARD_DRIVERS = 0;
+        double AWAY_FROM_DRIVERS = 180;
         double ANGLE_TOWARD_BACK_CENTER = 0;
-
-
 
 
         RobotHardware robot = new RobotHardware(this);
@@ -63,20 +61,21 @@ public class AutonomousBlue extends LinearOpMode {
 
         waitForStart();
 
-        robot.strafe(AWAY_FROM_AUDIENCE,6,0.1);
-        boolean objectDetected =
-                robot.forward(AWAY_FROM_DRIVERS, 28, 0.1);
-        if(objectDetected)
+        robot.strafe(TOWARD_AUDIENCE, 6, 0.2);
 
-        {
+        //first pixle drop location
+
+        boolean objectDetected =
+                robot.forward(TOWARD_DRIVERS, 28, 0.25);
+        if (objectDetected) {
             //We now know randomization was to the RIGHT position.
             robot.deployPixel();
-            robot.backUp(TOWARD_DRIVERS, 9, 0.1);
-            sleep(500);
-            robot.rotateToHeading(AWAY_FROM_AUDIENCE);
-            sleep(500);
+            robot.backUp(AWAY_FROM_DRIVERS, 9, 0.2);
+//            sleep(500);
+            robot.rotateToHeading(TOWARD_AUDIENCE);
+            sleep(250);
 
-            robot.forward(AWAY_FROM_AUDIENCE, 27, 0.1);
+            robot.forward(TOWARD_AUDIENCE, 27, 0.2);
             sleep(1000);
 //            robot.strafe(AWAY_FROM_DRIVERS,8, 0.1);
 //            myOpMode.sleep(3000);
@@ -88,56 +87,83 @@ public class AutonomousBlue extends LinearOpMode {
 
 //            robot.strafeRight(robot.getHeading()+ 90, 2.0, 0.1);
 //            myOpMode.sleep(1000);
-            robot.strafeLeft(TOWARD_DRIVERS, 1., 0.1);
+            robot.strafeLeft(TOWARD_DRIVERS, 1.5, 0.1);
             robot.moveArmToFlipPosition();
 //            myOpMode.telemetry.addData("Target Reached", targetReached);
 //            myOpMode.telemetry.update();
             sleep(3000);
             robot.moveArmToCarryPosition();
             sleep(1000);
-            robot.backUp(TOWARD_AUDIENCE, 1, 0.1);
-            robot.strafeLeft(TOWARD_DRIVERS, 14, 0.2);
-            robot.forward(AWAY_FROM_AUDIENCE, 5, 0.1);
+            robot.backUp(AWAY_FROM_AUDIENCE, 1, 0.4);
+            robot.strafeLeft(AWAY_FROM_DRIVERS, 14.5, 0.4);
+            robot.forward(TOWARD_AUDIENCE, 5, 0.2);
 
+            //second pixle drop location
+            //......................................................................................
 
-        } else
-
-        {
-            robot.backUp(TOWARD_DRIVERS, 14, 0.1);
-            sleep(500);
-            robot.strafeRight(TOWARD_AUDIENCE, 8, 0.1);
-            sleep(500);
+        } else {
+//            go to pixle drop location 2
+            robot.backUp(AWAY_FROM_DRIVERS, 3, 0.4);
+//            sleep(500);
+            robot.strafeRight(AWAY_FROM_AUDIENCE, 8.5, 0.4);
+//            sleep(500);
             objectDetected =
-                    robot.forward(AWAY_FROM_DRIVERS, 22, 0.1);
+                    robot.forward(TOWARD_DRIVERS, 11, 0.4);
             sleep(500);
             if (objectDetected) {
-                // We now know that the randomization was to center
-                robot.backUp(TOWARD_DRIVERS,1.5,0.1);
+//                drop purple pixle
+                robot.backUp(AWAY_FROM_DRIVERS,1.5,0.1);
                 robot.deployPixel();
-                robot.backUp(TOWARD_DRIVERS, 10, 0.1);
-                //
-                robot.rotateToHeading(AWAY_FROM_AUDIENCE);
+
+                robot.backUp(AWAY_FROM_DRIVERS, 10, 0.4);
+                //go to backbord
+                robot.rotateToHeading(TOWARD_AUDIENCE);
                 sleep(500);
-                robot.forward(AWAY_FROM_AUDIENCE, 35, 0.1);
+                robot.forward(TOWARD_AUDIENCE, 37.5, 0.25);
+                sleep(125);
+                robot.strafeRight(TOWARD_DRIVERS,2,0.2);
                 sleep(500);
-                //
+                //score pixle
                 robot.moveArmToFlipPosition();
                 sleep(3000);
                 robot.moveArmToCarryPosition();
                 sleep(1000);
-                robot.backUp(TOWARD_AUDIENCE, 1, 0.1);
-                robot.strafeLeft(TOWARD_DRIVERS, 15.5, 0.3);
-                robot.forward(AWAY_FROM_AUDIENCE, 5, 0.1);
+                robot.backUp(TOWARD_AUDIENCE, 1, 0.4);
+                robot.strafeRight(TOWARD_DRIVERS, 18, 0.4);
+                robot.forward(AWAY_FROM_AUDIENCE, 5, 0.2);
 
+                //..................................................................................
             } else {
-                robot.backUp(TOWARD_DRIVERS, 6.5, 0.1);
-                sleep(500);
-                robot.strafeLeft(TOWARD_AUDIENCE, 8, 0.1);
+//                go to pixle drop location 3
+                robot.backUp(AWAY_FROM_DRIVERS, 10, 0.2);
+                sleep(250);
+
+                robot.rotateToHeading(AWAY_FROM_AUDIENCE);
+                sleep(250);
+                robot.forward(AWAY_FROM_AUDIENCE,16,0.4);
+                robot.backUp(TOWARD_AUDIENCE,6,0.2);
                 robot.deployPixel();
-                robot.backUp(TOWARD_DRIVERS, 1.5, 0.1);
+//                go to backbord
+                robot.backUp(TOWARD_AUDIENCE, 26, 0.4);
+                robot.rotateToHeading(TOWARD_AUDIENCE);
+                sleep(250);
+                robot.forward(AWAY_FROM_AUDIENCE,21,0.3);
+                robot.strafeRight(TOWARD_DRIVERS,4,0.4);
+//                score pixle
+                sleep(250);
+                robot.moveArmToFlipPosition();
+                sleep(3000);
+                robot.moveArmToCarryPosition();
+                sleep(1000);
+                robot.backUp(AWAY_FROM_AUDIENCE, 1, 0.4);
+                robot.strafeLeft(AWAY_FROM_DRIVERS, 19.5, 0.4);
+                robot.forward(TOWARD_AUDIENCE, 4.5, 0.3);
+
+
             }
         }
         sleep(30000);
 
     }
+
 }

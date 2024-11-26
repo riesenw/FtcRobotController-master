@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
@@ -39,6 +40,8 @@ public class TeleOpVersion2 extends LinearOpMode {
     double joystickSensitivity = 0.25;
 
     @Override
+
+
     public void runOpMode() {
 
         robot.init();
