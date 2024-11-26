@@ -128,6 +128,165 @@ public class Mechanisms {
             return new LiftDown();
         }
     }
+    public static class Arm {
+        private Motor armMotor;
+        //create arm from hardwareMap and initialize it
+
+        public Arm(HardwareMap hardwareMap) {
+            //initialize our arm from hardwareMap
+            armMotor = new Motor(hardwareMap, "arm_motor", Motor.GoBILDA.RPM_117);
+            //set the braking mode to brake when theres no power given so it better holds target position
+            armMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            //put it into position control so it automatically flips direction
+            armMotor.setRunMode(Motor.RunMode.PositionControl);
+            //set the motor direction
+            armMotor.setInverted(true);
+            //set position coefficient of the lift, (p value)
+            armMotor.setPositionCoefficient(0.001);
+        }
+
+        public class ArmUp implements Action {
+            // checks if the arm motor has been powered on
+            private boolean initialized = false;
+            // actions are formatted via telemetry packets as below
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                // powers on motor, if it is not on
+                if (!initialized) {
+                    armMotor.set(0.8);
+                    initialized = true;
+                }
+                //set the target position of the lift to 3000 ticks
+                armMotor.setTargetPosition(3000);
+                if (!armMotor.atTargetPosition()) {
+                    // true causes the action to rerun
+                    return true;
+                } else {
+                    // false stops action rerun and stops the lift
+                    armMotor.set(0);
+                    return false;
+                }
+                // overall, the action powers the lift until it surpasses
+                // 3000 encoder ticks, then powers it off2
+            }
+        }
+        public Action ArmUp() {
+            return new ArmUp();
+        }
+
+        public class ArmDown implements Action {
+            // checks if the arm motor has been powered on
+            private boolean initialized = false;
+            // actions are formatted via telemetry packets as below
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //set the lifts target position to down position
+                armMotor.setTargetPosition(10);
+                // powers on motor, if it is not on
+                if (!initialized) {
+                    armMotor.set(-0.8);
+                    initialized = true;
+                }
+
+                //if the arm isn't at the target position then repeat the loop
+                if (!armMotor.atTargetPosition()) {
+                    // true causes the action to rerun
+                    return true;
+                } else {
+                    // false stops action rerun and stops the arm
+                    armMotor.set(0);
+                    return false;
+                }
+                // overall, the action powers the arm down until it goes below
+                // 100 encoder ticks, then powers it off
+            }
+        }
+        public Action ArmDown(){
+            return new ArmDown();
+        }
+    }
+
+    public static class Slide {
+        private Motor slideMotor;
+        //create lift from hardwaremap and initialize it
+
+        public Slide(HardwareMap hardwareMap) {
+            //initialize our lift from hardwareMap
+            slideMotor = new Motor(hardwareMap, "slide_motor", Motor.GoBILDA.RPM_117);
+            //set the braking mode to brake when theres no power given so it better holds target position
+            slideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            //put it into position control so it automatically flips direction
+            slideMotor.setRunMode(Motor.RunMode.PositionControl);
+            //set the lift motor direction
+            slideMotor.setInverted(true);
+            //set position coefficient of the lift, (p value)
+            slideMotor.setPositionCoefficient(0.001);
+        }
+
+        public class LiftUp implements Action {
+            // checks if the lift motor has been powered on
+            private boolean initialized = false;
+            // actions are formatted via telemetry packets as below
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                // powers on motor, if it is not on
+                if (!initialized) {
+                    slideMotor.set(0.8);
+                    initialized = true;
+                }
+                //set the target position of the lift to 3000 ticks
+                slideMotor.setTargetPosition(3000);
+                if (!slideMotor.atTargetPosition()) {
+                    // true causes the action to rerun
+                    return true;
+                } else {
+                    // false stops action rerun and stops the lift
+                    slideMotor.set(0);
+                    return false;
+                }
+                // overall, the action powers the lift until it surpasses
+                // 3000 encoder ticks, then powers it off2
+            }
+        }
+        public Action liftUp() {
+            return new LiftUp();
+        }
+
+        public class LiftDown implements Action {
+            // checks if the lift motor has been powered on
+            private boolean initialized = false;
+            // actions are formatted via telemetry packets as below
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //set the lifts target position to down position
+                slideMotor.setTargetPosition(10);
+                // powers on motor, if it is not on
+                if (!initialized) {
+                    slideMotor.set(-0.8);
+                    initialized = true;
+                }
+
+                //if the lift isn't at the target position then repeat the loop
+                if (!slideMotor.atTargetPosition()) {
+                    // true causes the action to rerun
+                    return true;
+                } else {
+                    // false stops action rerun and stops the lift
+                    slideMotor.set(0);
+                    return false;
+                }
+                // overall, the action powers the lift down until it goes below
+                // 100 encoder ticks, then powers it off
+            }
+        }
+        public Action liftDown(){
+            return new LiftDown();
+        }
+    }
     public static class Intake {
         private Motor intake;
         //create the claw object from hardware map
