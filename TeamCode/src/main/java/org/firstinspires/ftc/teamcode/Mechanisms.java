@@ -23,7 +23,7 @@ public class Mechanisms {
         public class CloseClaw implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                //when closeclaw is run, set the claw to closed position
+                //when CloseClaw is run, set the claw to closed position
                 claw.setPosition(0.55);
                 return false;
             }
