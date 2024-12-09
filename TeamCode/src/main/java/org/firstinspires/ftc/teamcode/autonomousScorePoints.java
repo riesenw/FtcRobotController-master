@@ -50,7 +50,9 @@ public class autonomousScorePoints extends LinearOpMode {
     private DcMotor armDrive1 = null;
     private DcMotor armDrive2 = null;
     private Servo clawDrive = null;
-    double speed = 0.25;
+    private Servo clawtator = null;
+    double speed = 0.5;
+    double slowSpeed = 0.2;
 
     @Override
     public void runOpMode() {
@@ -62,6 +64,7 @@ public class autonomousScorePoints extends LinearOpMode {
         armDrive1 = hardwareMap.get(DcMotor.class, "arm_drive_1");
         armDrive2 = hardwareMap.get(DcMotor.class, "arm_drive_2");
         clawDrive = hardwareMap.get(Servo.class, "claw");
+        clawtator = hardwareMap.get(Servo.class, "claw_rotate");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -77,8 +80,15 @@ public class autonomousScorePoints extends LinearOpMode {
 //        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        slideDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         slideDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armDrive1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -91,36 +101,151 @@ public class autonomousScorePoints extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        clawDrive.setPosition(1);
+
+        armDrive1.setPower(-speed);
+        armDrive2.setPower(-speed);
+
+
+        armDrive1.setTargetPosition(-1450);
+        armDrive2.setTargetPosition(-1450);
+
+        armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        sleep(1800);
+        armDrive1.setPower(0);
+        armDrive2.setPower(0);
+
+        straightDrive(1000);
+
+
+        clawtator.setPosition(0);
+
+        sleep(2000);
+
+        clawtator.setPosition(0);
+
+        armDrive1.setPower(speed);
+        armDrive2.setPower(speed);
+
+        armDrive2.setTargetPosition(-1000);
+        armDrive1.setTargetPosition(-1000);
+
+        armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        sleep(1000);
+
+        slowBackDrive(500);
+        armDrive1.setPower(0);
+        armDrive2.setPower(0);
+
+
+
+        clawDrive.setPosition(0);
+        
+        sleep(500);
+
+
+        backDrive(600);
+
+
+        rightDrive(1500);
+
+
+
+
+    }
+    //functions
+    void straightDrive(int distance) {
+
+
         leftFrontDrive.setPower(speed);
         rightFrontDrive.setPower(speed);
         leftBackDrive.setPower(speed);
         rightBackDrive.setPower(speed);
 
-        straightDrive(100);
+        sleep(distance);
+
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
 
         sleep(1000);
-
-        straightDrive(-100);
-
-        sleep(1000);
-
 
     }
+    void slowStraightDrive(int distance) {
 
-    void straightDrive(int distance) {
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFrontDrive.setTargetPosition(distance);
-        leftBackDrive.setTargetPosition(distance);
-        rightBackDrive.setTargetPosition(distance);
-        rightFrontDrive.setTargetPosition(distance);
+        leftFrontDrive.setPower(slowSpeed);
+        rightFrontDrive.setPower(slowSpeed);
+        leftBackDrive.setPower(slowSpeed);
+        rightBackDrive.setPower(slowSpeed);
 
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(distance);
+
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+
+        sleep(1000);
+
+    }
+    void backDrive(int distance) {
+
+
+        leftFrontDrive.setPower(-speed);
+        rightFrontDrive.setPower(-speed);
+        leftBackDrive.setPower(-speed);
+        rightBackDrive.setPower(-speed);
+
+        sleep(distance);
+
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+
+        sleep(1000);
+
+    }
+    void slowBackDrive(int distance) {
+
+
+        leftFrontDrive.setPower(-slowSpeed);
+        rightFrontDrive.setPower(-slowSpeed);
+        leftBackDrive.setPower(-slowSpeed);
+        rightBackDrive.setPower(-slowSpeed);
+
+        sleep(distance);
+
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+
+        sleep(1000);
+
+    }
+    void rightDrive(int distance) {
+
+
+        leftFrontDrive.setPower(speed);
+        rightFrontDrive.setPower(-speed);
+        leftBackDrive.setPower(-speed);
+        rightBackDrive.setPower(speed);
+
+        sleep(distance);
+
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+
+        sleep(1000);
+
     }
 }

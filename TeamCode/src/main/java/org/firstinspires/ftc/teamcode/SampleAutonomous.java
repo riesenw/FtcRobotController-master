@@ -35,6 +35,7 @@ public class SampleAutonomous extends LinearOpMode {
                 //move lift up after 1.5 seconds
                 /*.afterTime(1.5, lift.liftUp())*/;
 
+
         TrajectoryActionBuilder traj2 = traj1.endTrajectory().fresh()
                 //simple movement, spline to a linear heading, so it will go to it's original position
                 //(0,0) with a heading of 0 degrees

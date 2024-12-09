@@ -165,11 +165,11 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             //repeat for arm
 
             if ((armDrive1.getCurrentPosition() >= 0) && (moveArm > 0)) armPower = 0.0;
-            if ((armDrive1.getCurrentPosition() <= -2600) && (moveArm < 0)) armPower = 0.0;
+            if ((armDrive1.getCurrentPosition() <= -2800) && (moveArm < 0)) armPower = 0.0;
 
             //claw moving stuff
-            if (gamepad2.right_bumper) clawDrive.setPosition(1);
-            if (!gamepad2.right_bumper) clawDrive.setPosition(0.55);
+            if (gamepad2.right_bumper) clawDrive.setPosition(0.55);
+            if (!gamepad2.right_bumper) clawDrive.setPosition(1);
 
 
 

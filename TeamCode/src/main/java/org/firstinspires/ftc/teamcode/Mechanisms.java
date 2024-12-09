@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
 public class Mechanisms {
     //class to create a claw
     public static class Claw {
@@ -212,7 +213,8 @@ public class Mechanisms {
                 // ARM_RAISED_POSITION encoder ticks, then powers it off
             }
         }
-        public Action ArmDown() {
+
+        public Action armDown() {
             return new ArmDown();
         }
     }
@@ -347,4 +349,58 @@ public class Mechanisms {
             return new Intake.spinBackward();
         }
     }
+
+    public static class Wrist {
+        final double WRIST_DOWN_POSITION = 0.0;
+        final double WRIST_MID_POSITION = 0.325;
+        final double WRIST_UP_POSITION = 0.65;
+
+        private Servo wristServo;
+        //create the Wrist object from hardware map
+
+        public Wrist(HardwareMap hardwareMap) {
+            wristServo = hardwareMap.get(Servo.class, "wrist_servo");
+        }
+
+        public class WristDown implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when wristDown is run, set the wrist to down position
+                wristServo.setPosition(WRIST_DOWN_POSITION);
+                return false;
+            }
+        }
+
+        //allow the function to be able to called from other files
+        public Action wristDown() {
+            return new Wrist.WristDown();
+        }
+        //create an wristUp function by implementing action class
+
+        public class wristUp implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when wristUp is run, set the wrist to the up position
+                wristServo.setPosition(WRIST_UP_POSITION);
+                return false;
+            }
+        }
+
+        //allow the function to be able to be called from other files
+        public Action wristUp() {
+            return new Wrist.wristUp();
+        }
+
+        public class wristMid implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when wristUp is run, set the wrist to the mid position
+                wristServo.setPosition(WRIST_MID_POSITION);
+                return false;
+            }
+        }
+
+    }
 }
+
+

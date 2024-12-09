@@ -48,8 +48,8 @@ public class autonomousGoAhead extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
     private Servo clawDrive = null;
-    int travelDistance = 1000;
-    double speed = 0.25;
+    int travelDistance = 250;
+    double speed = 0.1;
 
 
 
@@ -62,8 +62,6 @@ public class autonomousGoAhead extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         clawDrive = hardwareMap.get(Servo.class, "claw");
 
-        //open claw when init
-        clawDrive.setPosition(0.55);
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -94,7 +92,7 @@ public class autonomousGoAhead extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        clawDrive.setPosition(0);
+
 
         leftFrontDrive.setPower(speed);
         rightFrontDrive.setPower(speed);

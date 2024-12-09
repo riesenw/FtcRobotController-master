@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -73,11 +74,20 @@ public class SampleTeleOp extends LinearOpMode {
         //initialize claw servo object from our mechanisms file
             Mechanisms.Claw claw = new Mechanisms.Claw(hardwareMap);
 
-        //initialize lift motor object from our mechanimsms file
-            Mechanisms.Lift lift = new Mechanisms.Lift(hardwareMap);
+        //initialize wrist servo object from our mechanisms file
+            Mechanisms.Wrist wrist = new Mechanisms.Wrist(hardwareMap);
 
-        //intialize intake motor from our mechanisms file
-            Mechanisms.Intake intake = new Mechanisms.Intake(hardwareMap);
+        //initialize slide object from our mechanisms file
+            Mechanisms.Slide slide = new Mechanisms.Slide(hardwareMap);
+
+        //initialize arm object from our mechanisms file
+            Mechanisms.Arm arm= new Mechanisms.Arm(hardwareMap);
+
+//        //initialize lift motor object from our mechanimsms file
+//            Mechanisms.Lift lift = new Mechanisms.Lift(hardwareMap);
+//
+//        //intialize intake motor from our mechanisms file
+//            Mechanisms.Intake intake = new Mechanisms.Intake(hardwareMap);
 
 
         //wait for the driver station to start
@@ -121,30 +131,29 @@ public class SampleTeleOp extends LinearOpMode {
                 //can use .wasJustPressed because the lift target position only needs to change once.
                     if(driver1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
                         runningActions.add(new SequentialAction(
-                                lift.liftUp()
+                                arm.armUp()
                         ));
                         }
                     else if (driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
                         runningActions.add(new SequentialAction(
-                                lift.liftDown()
+                                arm.armDown()
                         ));
                         }
 
-            //example of intake control
-                //use an if else statement first so that theres a tolerance before it starts moving the motor
-                    if(driver1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1) {
-                            //call the spin intake forward function
-                        runningActions.add(new SequentialAction(
-                                intake.spinForward()
-                        ));
-                        }
-                    else if(driver1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1) {
-                            //call the spin intake backward function
-                        runningActions.add(new SequentialAction(
-                                intake.spinBackward()
-                        ));
-                        }
-
+//            //example of intake control
+//                //use an if else statement first so that theres a tolerance before it starts moving the motor
+//                    if(driver1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1) {
+//                            //call the spin intake forward function
+//                        runningActions.add(new SequentialAction(
+//                                intake.spinForward()
+//                        ));
+//                        }
+//                    else if(driver1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1) {
+//                            //call the spin intake backward function
+//                        runningActions.add(new SequentialAction(
+//                                intake.spinBackward()
+//                        ));
+//                        }
 
             /*Code to automatically reset the imu to the last known setting if it gets reset because of static.
             I highly recommend leaving this unchanged unless you know what you're doing*/
