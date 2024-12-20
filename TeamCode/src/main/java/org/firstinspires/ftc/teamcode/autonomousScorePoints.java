@@ -107,37 +107,37 @@ public class autonomousScorePoints extends LinearOpMode {
         armDrive2.setPower(-speed);
 
 
-        armDrive1.setTargetPosition(-1450);
-        armDrive2.setTargetPosition(-1450);
+        armDrive1.setTargetPosition(-2750);
+        armDrive2.setTargetPosition(-2750);
 
         armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        sleep(1800);
-        armDrive1.setPower(0);
-        armDrive2.setPower(0);
+        slideDrive.setPower(-speed);
+        slideDrive.setTargetPosition(-250);
+        slideDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        sleep(1500);
+
+        slideDrive.setPower(0);
 
         straightDrive(1000);
 
+        armDrive1.setPower(0);
+        armDrive2.setPower(0);
+
+        slideDrive.setPower(speed);
+        slideDrive.setTargetPosition(-700);
+        slideDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         clawtator.setPosition(0);
 
-        sleep(2000);
-
-        clawtator.setPosition(0);
-
-        armDrive1.setPower(speed);
-        armDrive2.setPower(speed);
-
-        armDrive2.setTargetPosition(-1000);
-        armDrive1.setTargetPosition(-1000);
-
-        armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(800);
+        slideDrive.setPower(0);
+        clawDrive.setPosition(0);
 
         sleep(1000);
 
-        slowBackDrive(500);
         armDrive1.setPower(0);
         armDrive2.setPower(0);
 
@@ -148,10 +148,18 @@ public class autonomousScorePoints extends LinearOpMode {
         sleep(500);
 
 
-        backDrive(600);
+        backDrive(450);
 
 
-        rightDrive(1500);
+        rightDrive(1600);
+
+        straightDrive(1300);
+
+        rightDrive(200);
+
+        backDrive(1300);
+
+        straightDrive(1300);
 
 
 
