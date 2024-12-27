@@ -54,7 +54,7 @@ public class autonomousScorePoints extends LinearOpMode {
     double speed = 0.5;
     double slowSpeed = 0.2;
 
-    double increment = 0;
+    int increment = 0;
 
     @Override
     public void runOpMode() {
@@ -105,47 +105,57 @@ public class autonomousScorePoints extends LinearOpMode {
         armDrive2.setPower(speed);
 
 
-        armDrive1.setTargetPosition(-2700);
-        armDrive2.setTargetPosition(-2700);
+        armDrive1.setTargetPosition(-2600);
+        armDrive2.setTargetPosition(-2600);
 
         armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         slideDrive.setPower(speed);
-        slideDrive.setTargetPosition(-250);
+        slideDrive.setTargetPosition(-350);
         slideDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         sleep(1500);
 
-        straightDrive(800);
+        straightDrive(900);
 
-        slowStraightDrive(300);
+        slowStraightDrive(200);
+
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         slideDrive.setTargetPosition(-900);
         slideDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-
-        clawtator.setPosition(0);
+        clawtator.setPosition(0.5);
 
         sleep(800);
-        clawDrive.setPosition(0);
 
-        armDrive1.setTargetPosition(-2400);
-        armDrive2.setTargetPosition(-2400);
+        clawDrive.setPosition(0);
+        clawtator.setPosition(0.3);
+        armDrive1.setTargetPosition(-1800);
+        armDrive2.setTargetPosition(-1800);
 
         armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
         sleep(1000);
 
-        backDrive(450);
+        backDrive(600);
 
 
-        rightDrive(1550);
+        rightDrive(1600);
 
         rightRotate(50);
 
-        straightDrive(1100);
+        straightDrive(1200);
 
         rightDrive(500);
 
@@ -155,10 +165,11 @@ public class autonomousScorePoints extends LinearOpMode {
 
         rightDrive(500);
         sleep(300);
-        backDrive(1400);
+        backDrive(1300);
         sleep(300);
-        straightDrive(1400);
+        straightDrive(1300);
         sleep(300);
+        rightRotate(50);
         rightDrive(300);
         sleep(150);
         backDrive(1300);
@@ -167,21 +178,97 @@ public class autonomousScorePoints extends LinearOpMode {
 
         leftDrive(500);
 
-        leftRotate(1300);
 
         while (increment < 4) {
 
+            leftRotate(1250);
+
+
             clawDrive.setPosition(0);
             clawtator.setPosition(0.4);
-            armDrive1.setTargetPosition(-750);
-            armDrive2.setTargetPosition(-750);
+            armDrive1.setTargetPosition(-800);
+            armDrive2.setTargetPosition(-800);
             armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            slowStraightDrive(500);
+            slideDrive.setTargetPosition(-1100);
 
-            sleep(10000);
+            slowStraightDrive(1500);
+
+            clawDrive.setPosition(1);
+
+            sleep(500);
+
+            armDrive1.setTargetPosition(-1000);
+            armDrive2.setTargetPosition(-1000);
+            armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            slideDrive.setTargetPosition(-350);
+            slideDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            sleep(50);
+
+            int rightMove = 1700 - 100 * increment;
+
+            rightDrive(rightMove);
+
+            armDrive1.setTargetPosition(-2500);
+            armDrive2.setTargetPosition(-2500);
+
+            armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+
+
+            rightRotate(1350);
+
+            straightDrive(400);
+
+            slowStraightDrive(900);
+
+            leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            slideDrive.setTargetPosition(-900);
+            slideDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            clawtator.setPosition(0.5);
+
+            leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+            sleep(800);
+
+            clawDrive.setPosition(0);
+            clawtator.setPosition(0.3);
+            armDrive1.setTargetPosition(-2100);
+            armDrive2.setTargetPosition(-2100);
+
+            armDrive1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            sleep(1000);
+
+            slowBackDrive(300);
+
+            backDrive(200);
+
+            rightDrive(rightMove);
+
+            increment += 1;
+
+            sleep(100);
         }
+        slideDrive.setTargetPosition(0);
+        slideDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep(100);
+        slowStraightDrive(300);
 
         sleep(100);
     }
