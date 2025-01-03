@@ -29,6 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive.PARAMS;
+
+import com.acmerobotics.roadrunner.ftc.LazyImu;
+import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -36,42 +42,53 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 @TeleOp(name = "Omni With Claw v2", group = "Linear OpMode")
 public class OmniWithExtendingArmClawv2 extends LinearOpMode {
 
     // Declare OpMode members for each of the  motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
+    private Motor leftFrontDrive = null;
+    private Motor leftBackDrive = null;
+    private Motor rightFrontDrive = null;
+    private Motor rightBackDrive = null;
     private DcMotor slideDrive = null;
     private DcMotor armDrive1 = null;
     private DcMotor armDrive2 = null;
 
     private Servo clawDrive = null;
     private Servo clawtator = null;
+    private LazyImu lazyImu;
 
     @Override
     public void runOpMode() {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        leftFrontDrive = new Motor(hardwareMap, "left_front_drive");
+        leftBackDrive = new Motor(hardwareMap, "left_back_drive");
+        rightFrontDrive = new Motor(hardwareMap, "right_front_drive");
+        rightBackDrive = new Motor(hardwareMap, "right_back_drive");
+
+        leftFrontDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        MecanumDrive drive = new MecanumDrive(leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive);
+
         slideDrive = hardwareMap.get(DcMotor.class, "slide_drive");
         armDrive1 = hardwareMap.get(DcMotor.class, "arm_drive_1");
         armDrive2 = hardwareMap.get(DcMotor.class, "arm_drive_2");
 
         clawDrive = hardwareMap.get(Servo.class, "claw");
         clawtator = hardwareMap.get(Servo.class, "claw_rotate");
+        lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
+                PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
 
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        //leftFrontDrive.setInverted(true);
+        //leftBackDrive.setInverted(true);
+
         slideDrive.setDirection(DcMotor.Direction.FORWARD);
         slideDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armDrive1.setDirection(DcMotor.Direction.REVERSE);
@@ -88,7 +105,7 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
 
         //claw spiny thing code defining
         double servoTargetPosition = 0.75;
-        double increment = 0.01;
+        double increment = 0.03;
 
         //open claw when init
         //clawDrive.setPosition(0.55);
@@ -130,9 +147,8 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             double lateral = 0.3 * gamepad1.left_stick_x;
             double yaw = 0.3 * gamepad1.right_stick_x;
 
-            double extend = 0.3 * gamepad2.right_stick_y;
-            double moveArm = 0.6 * gamepad2.left_stick_y;
-
+            double extend = 0.8 * gamepad2.right_stick_y;
+            double moveArm = 1 * gamepad2.left_stick_y;
 
             //unused for now
 
@@ -171,8 +187,6 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             if (gamepad2.right_bumper) clawDrive.setPosition(0.55);
             if (!gamepad2.right_bumper) clawDrive.setPosition(1);
 
-
-
             //claw spiny stuff
 
 
@@ -186,22 +200,11 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             clawtator.setPosition(servoTargetPosition);
 
 
-
             double clawPosition = clawDrive.getPosition();
 
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
-            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-            max = Math.max(max, Math.abs(leftBackPower));
-            max = Math.max(max, Math.abs(rightBackPower));
-
-            if (max > 1.0) {
-                leftFrontPower /= max;
-                rightFrontPower /= max;
-                leftBackPower /= max;
-                rightBackPower /= max;
-            }
 
             // This is test code:
             //
@@ -220,11 +223,13 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
             */
 
-            // Send calculated power to wheels
-            leftFrontDrive.setPower(leftFrontPower);
-            rightFrontDrive.setPower(rightFrontPower);
-            leftBackDrive.setPower(leftBackPower);
-            rightBackDrive.setPower(rightBackPower);
+            drive.driveFieldCentric(
+                    -gamepad1.left_stick_x,
+                    gamepad1.left_stick_y,
+                    -gamepad1.right_stick_x,
+                    lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES),
+                    true
+                    );
 
 
             slideDrive.setPower(slidePower);

@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
+import com.qualcomm.hardware.bosch.BHI260IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -24,8 +25,7 @@ public class SampleTeleOp extends LinearOpMode {
     //can have variables and define hardware objects here, anything from here to "waitForStart();" will run in initialization.
 
     //Change to AdafruitBNO055IMU, BNO055IMU or BHI260IMU based on what you have
-    private AdafruitBNO055IMU imu;
-
+    private BNO055IMU imu;
     //variables for the automatic imu reset
     double prevImuValue = 0;
     double imuValue = 0;
@@ -38,7 +38,7 @@ public class SampleTeleOp extends LinearOpMode {
     public void runOpMode() {
 
         //IMU intialization, you will need to change this to  match your imu
-            imu = hardwareMap.get(AdafruitBNO055IMU.class, "imu");
+        BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
             parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
             imu.initialize(parameters);
@@ -75,10 +75,10 @@ public class SampleTeleOp extends LinearOpMode {
             Mechanisms.Claw claw = new Mechanisms.Claw(hardwareMap);
 
         //initialize wrist servo object from our mechanisms file
-            Mechanisms.Wrist wrist = new Mechanisms.Wrist(hardwareMap);
+            //Mechanisms.Wrist wrist = new Mechanisms.Wrist(hardwareMap);
 
         //initialize slide object from our mechanisms file
-            Mechanisms.Slide slide = new Mechanisms.Slide(hardwareMap);
+            //Mechanisms.Slide slide = new Mechanisms.Slide(hardwareMap);
 
         //initialize arm object from our mechanisms file
             Mechanisms.Arm arm= new Mechanisms.Arm(hardwareMap);
@@ -168,20 +168,20 @@ public class SampleTeleOp extends LinearOpMode {
                     leftFront.set(0); rightFront.set(0); leftBack.set(0); rightBack.set(0);
                     //give driver feedback in the form of a short rumble if the imu has to reset because of static
                     gamepad1.rumble(500);
-                    imu.initialize();
+                    //imu.initialize();
                     imuDifference = imuWrap;
                     imuValue = imu.getAngularOrientation().firstAngle + imuDifference;
                 }
                 prevImuValue = imuValue;
 
 
-            //Code to manually reset the imu, you can change this to whatever button you want
-                if (driver1.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-                    imu.initialize();
-                    imuValue = 0;
-                    prevImuValue = 0;
-                    imuDifference = 0;
-                }
+//            //Code to manually reset the imu, you can change this to whatever button you want
+//                if (driver1.getButton(GamepadKeys.Button.DPAD_DOWN)) {
+//                    imu.initialize();
+//                    imuValue = 0;
+//                    prevImuValue = 0;
+//                    imuDifference = 0;
+//                }
 
             /*call our mecanum drive function from ftclib using field centric control,
             if you want robotcentric, change "Field" to "Robot" and remove the imuValue variable,
