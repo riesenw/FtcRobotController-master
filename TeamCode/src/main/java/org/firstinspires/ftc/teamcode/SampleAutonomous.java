@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
+import com.acmerobotics.roadrunner.TurnConstraints;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -41,10 +42,10 @@ public class SampleAutonomous extends LinearOpMode {
         Mechanisms.Pivot pivot = new Mechanisms.Pivot(hardwareMap);
 
 
-        TrajectoryActionBuilder traj1 = drive.actionBuilder(initialPose)
+        TrajectoryActionBuilder traj1 = drive.actionBuilder(initialPose);
                 //simple movement, spline to a linear heading, so it will go to position
                 //(10, 10) with a heading of 90 degrees
-                .splineToLinearHeading(new Pose2d(32, 0, Math.toRadians(0)), Math.toRadians(0));
+
                 //move lift up after 1.5 seconds
                 /*.afterTime(1.5, lift.liftUp())*/
 
@@ -52,25 +53,26 @@ public class SampleAutonomous extends LinearOpMode {
         TrajectoryActionBuilder traj2 = traj1.endTrajectory().fresh()
                 //simple movement, spline to a linear heading, so it will go to it's original position
                 //(0,0) with a heading of 0 degrees
+                .splineToLinearHeading(new Pose2d(32, 0, Math.toRadians(0)), Math.toRadians(0))
                 .afterTime(0, extender.extendSpec())
                 .afterTime(0.5, claw.openClaw())
                 .afterTime(0.5, extender.extendIn())
                 .afterTime(0.5, pivot.pivotClipDown())
                 .waitSeconds(0.5)
                 //.splineToLinearHeading(new Pose2d(15, -40, Math.toRadians(0)), Math.toRadians(315))
-                .splineToConstantHeading(new Vector2d(15, -38), Math.toRadians(270), new TranslationalVelConstraint(30))
-                .splineToConstantHeading(new Vector2d(50, -46), Math.toRadians(300), new TranslationalVelConstraint(30))
-                .splineToConstantHeading(new Vector2d(15, -54), Math.toRadians(300), new TranslationalVelConstraint(30))
-                .splineToConstantHeading(new Vector2d(50, -54), Math.toRadians(300), new TranslationalVelConstraint(30))
-                .splineToConstantHeading(new Vector2d(15, -63), Math.toRadians(300), new TranslationalVelConstraint(30))
-                .splineToConstantHeading(new Vector2d(50, -63), Math.toRadians(300), new TranslationalVelConstraint(30))
-                .splineToConstantHeading(new Vector2d(15, -78), Math.toRadians(300), new TranslationalVelConstraint(30))
+                .splineToConstantHeading(new Vector2d(15, -38), Math.toRadians(270), new TranslationalVelConstraint(50))
+                .splineToConstantHeading(new Vector2d(55, -40), Math.toRadians(300), new TranslationalVelConstraint(50))
+                .splineToConstantHeading(new Vector2d(15, -56), Math.toRadians(300), new TranslationalVelConstraint(50))
+                //.splineToConstantHeading(new Vector2d(55, -56), Math.toRadians(300), new TranslationalVelConstraint(50))
+                //.splineToConstantHeading(new Vector2d(15, -78), Math.toRadians(300), new TranslationalVelConstraint(50))
+                //.splineToConstantHeading(new Vector2d(50, -63), Math.toRadians(300), new TranslationalVelConstraint(30))
+                //.splineToConstantHeading(new Vector2d(15, -78), Math.toRadians(300), new TranslationalVelConstraint(30))
                 //move lift down after 5 inches traveled
                 /*.afterDisp(5.0, lift.liftDown()0*/;
 
         TrajectoryActionBuilder traj3 = traj2.endTrajectory().fresh()
                 //position for grab
-                .splineToConstantHeading(new Vector2d(25, -50), Math.toRadians(90), new TranslationalVelConstraint(30))
+                .splineToConstantHeading(new Vector2d(15, -50), Math.toRadians(90), new TranslationalVelConstraint(50))
                 .turn(Math.toRadians(180))
                 .afterTime(0, pivot.pivotSpecGrab())
                 .afterTime(0, extender.extendGrab())
@@ -79,15 +81,38 @@ public class SampleAutonomous extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(7, -50), Math.toRadians(0), new TranslationalVelConstraint(20))
                 .afterTime(0, claw.closeClaw())
                 .waitSeconds(0.2)
-                .afterTime(0, pivot.pivotClippingPos())
+                .afterTime(0, pivot.pivotClippingPos2())
                 .afterTime(0, extender.extendIn())
                 .afterTime(0, wrist.armUp())
+                //.waitSeconds(0.5)
                 .turn(Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(32, -6), Math.toRadians(0), new TranslationalVelConstraint(30))
-                .afterTime(0.5, extender.extendSpec());
+                .splineToConstantHeading(new Vector2d(32, -6), Math.toRadians(0), new TranslationalVelConstraint(50))
+                .afterTime(0, extender.extendSpec())
+                .afterTime(0.5, claw.openClaw())
+                .afterTime(0.5, extender.extendIn())
+                .afterTime(0.5, pivot.pivotClipDown());
 
-
-
+        TrajectoryActionBuilder traj4 = traj3.endTrajectory().fresh()
+                .splineToConstantHeading(new Vector2d(15, -50), Math.toRadians(90), new TranslationalVelConstraint(50))
+                .turn(Math.toRadians(180))
+                .afterTime(0, pivot.pivotSpecGrab())
+                .afterTime(0, extender.extendGrab())
+                .afterTime(0, wrist.armSpec())
+                .afterTime(0, claw.openClaw())
+                .splineToConstantHeading(new Vector2d(8, -50), Math.toRadians(0), new TranslationalVelConstraint(20))
+                .afterTime(0, claw.closeClaw())
+                .waitSeconds(0.2)
+                .afterTime(0, pivot.pivotClippingPos3())
+                .afterTime(0, extender.extendIn())
+                .afterTime(0, wrist.armUp())
+                //.waitSeconds(0.5)
+                .turn(Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(36, -12), Math.toRadians(0), new TranslationalVelConstraint(50))
+                .afterTime(0, extender.extendSpec())
+                .afterTime(0.5, claw.openClaw())
+                .afterTime(0.5, extender.extendIn())
+                .afterTime(0.5, pivot.pivotClipDown())
+                .waitSeconds(0.5);
 
 
 
@@ -113,7 +138,8 @@ public class SampleAutonomous extends LinearOpMode {
                         pivot.pivotClippingPos(),
                         traj1.build(),
                         traj2.build(),
-                        traj3.build()
+                        traj3.build(),
+                        traj4.build()
 
 
                 ));

@@ -28,7 +28,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                claw.setPosition(0.75);
+                claw.setPosition(0.85);
                 return false;
             }
         }
@@ -66,7 +66,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //this is for arm in
-                arm.setPosition(0.5);
+                arm.setPosition(0.55);
                 return false;
             }
         }
@@ -164,6 +164,46 @@ public class Mechanisms {
 
         public Action pivotClippingPos() {
             return new PivotClippingPos();
+        }
+        public class PivotClippingPos2 implements Action {
+
+            // actions are formatted via telemetry packets as below
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                // powers on motor, if it is not on
+                //set the target position of the lift to 3000 ticks
+                //leftPivot.setTargetPosition(1300);
+                leftPivot.setTargetPosition(-2750);
+                rightPivot.setTargetPosition(-2750);
+                return false;
+                // overall, the action powers the lift until it surpasses
+                // 3000 encoder ticks, then powers it off2
+            }
+        }
+
+        public Action pivotClippingPos2() {
+            return new PivotClippingPos2();
+        }
+        public class PivotClippingPos3 implements Action {
+
+            // actions are formatted via telemetry packets as below
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                // powers on motor, if it is not on
+                //set the target position of the lift to 3000 ticks
+                //leftPivot.setTargetPosition(1300);
+                leftPivot.setTargetPosition(-2850);
+                rightPivot.setTargetPosition(-2850);
+                return false;
+                // overall, the action powers the lift until it surpasses
+                // 3000 encoder ticks, then powers it off2
+            }
+        }
+
+        public Action pivotClippingPos3() {
+            return new PivotClippingPos3();
         }
         public class PivotClipDown implements Action {
 
