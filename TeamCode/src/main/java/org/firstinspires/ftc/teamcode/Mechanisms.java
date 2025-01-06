@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -28,7 +25,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                claw.setPosition(0.85);
+                claw.setPosition(0.7);
                 return false;
             }
         }
@@ -42,7 +39,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when openclaw is run, set the claw to the open position
-                claw.setPosition(0.45);
+                claw.setPosition(0.5);
                 return false;
             }
         }
@@ -66,7 +63,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //this is for arm in
-                arm.setPosition(0.55);
+                arm.setPosition(0.45);
                 return false;
             }
         }
@@ -93,7 +90,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                arm.setPosition(0.4);
+                arm.setPosition(0.35);
                 return false;
             }
         }
@@ -154,8 +151,8 @@ public class Mechanisms {
                 // powers on motor, if it is not on
                 //set the target position of the lift to 3000 ticks
                 //leftPivot.setTargetPosition(1300);
-                leftPivot.setTargetPosition(-2600);
-                rightPivot.setTargetPosition(-2600);
+                leftPivot.setTargetPosition(-2500);
+                rightPivot.setTargetPosition(-2500);
                 return false;
                 // overall, the action powers the lift until it surpasses
                 // 3000 encoder ticks, then powers it off2
@@ -165,46 +162,7 @@ public class Mechanisms {
         public Action pivotClippingPos() {
             return new PivotClippingPos();
         }
-        public class PivotClippingPos2 implements Action {
 
-            // actions are formatted via telemetry packets as below
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                // powers on motor, if it is not on
-                //set the target position of the lift to 3000 ticks
-                //leftPivot.setTargetPosition(1300);
-                leftPivot.setTargetPosition(-2750);
-                rightPivot.setTargetPosition(-2750);
-                return false;
-                // overall, the action powers the lift until it surpasses
-                // 3000 encoder ticks, then powers it off2
-            }
-        }
-
-        public Action pivotClippingPos2() {
-            return new PivotClippingPos2();
-        }
-        public class PivotClippingPos3 implements Action {
-
-            // actions are formatted via telemetry packets as below
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                // powers on motor, if it is not on
-                //set the target position of the lift to 3000 ticks
-                //leftPivot.setTargetPosition(1300);
-                leftPivot.setTargetPosition(-2850);
-                rightPivot.setTargetPosition(-2850);
-                return false;
-                // overall, the action powers the lift until it surpasses
-                // 3000 encoder ticks, then powers it off2
-            }
-        }
-
-        public Action pivotClippingPos3() {
-            return new PivotClippingPos3();
-        }
         public class PivotClipDown implements Action {
 
             // actions are formatted via telemetry packets as below
@@ -234,8 +192,8 @@ public class Mechanisms {
             public boolean run(@NonNull TelemetryPacket packet) {
                 // powers on motor, if it is not on
                 //set the target position of the lift to 3000 ticks
-                leftPivot.setTargetPosition(-950);
-                rightPivot.setTargetPosition(-950);
+                leftPivot.setTargetPosition(-850);
+                rightPivot.setTargetPosition(-850);
                 return false;
                 // overall, the action powers the lift until it surpasses
                 // 3000 encoder ticks, then powers it off2
@@ -351,7 +309,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when openclaw is run, set the claw to the open position
-                extender.setTargetPosition(-1200);
+                extender.setTargetPosition(-1900);
                 return false;
             }
         }
@@ -390,4 +348,135 @@ public class Mechanisms {
             return new Extender.UpdateExtender();
         }
     }
-}
+                                                                                                                    //HERE
+    public static class Macros {
+        private Motor extender;
+        private Motor leftPivot;
+        private Motor rightPivot;
+        private Servo wrist;
+        private Servo claw;
+        //create the claw object from hardware map
+
+        public Macros(HardwareMap hardwareMap) {
+            extender = new Motor(hardwareMap, "slide_drive", Motor.GoBILDA.RPM_312);
+            extender.setRunMode(Motor.RunMode.PositionControl);
+            extender.setPositionCoefficient(0.0025);
+            //initialize our lift from hardwareMap
+            leftPivot = new Motor(hardwareMap, "arm_drive_1", Motor.GoBILDA.RPM_60);
+            //set the lift motor direction
+            leftPivot.setInverted(true);
+            //set position coefficient of the lift, (p value)
+            //initialize our lift from hardwareMap
+            rightPivot = new Motor(hardwareMap, "arm_drive_2", Motor.GoBILDA.RPM_60);
+            //set the lift motor direction
+            rightPivot.setInverted(false);
+            rightPivot.setRunMode(Motor.RunMode.PositionControl);
+            rightPivot.setPositionCoefficient(0.0016);
+            leftPivot.setPositionCoefficient(0.0016);
+            leftPivot.setRunMode(Motor.RunMode.PositionControl);
+            wrist = hardwareMap.get(Servo.class, "claw_rotate");
+            claw = hardwareMap.get(Servo.class, "claw");
+        }
+
+        //implement action class in our close claw function
+
+        public class CloseGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-500);
+                leftPivot.setTargetPosition(-450);
+                rightPivot.setTargetPosition(-450);
+                wrist.setPosition(0.1);
+                claw.setPosition(0.5);
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action closeGrabPosition() {
+            return new Macros.CloseGrabPosition();
+        }
+        public class MiddleGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-1650);
+                leftPivot.setTargetPosition(-900);
+                rightPivot.setTargetPosition(-900);
+                wait(500);
+                wrist.setPosition(0.1);
+                claw.setPosition(0.5);
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action middleGrabPosition() {
+            return new Macros.MiddleGrabPosition();
+        }
+        public class FarGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-2250);
+                leftPivot.setTargetPosition(-950);
+                rightPivot.setTargetPosition(-950);
+                wrist.setPosition(0.1);
+                claw.setPosition(0.5);
+                return false;
+            }
+        }
+        public Action farGrabPosition() {
+            return new FarGrabPosition();
+        }
+        public class CloseGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-500);
+                leftPivot.setTargetPosition(-450);
+                rightPivot.setTargetPosition(-450);
+                wrist.setPosition(0.1);
+                claw.setPosition(0.5);
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action closeGrab() {
+            return new Macros.CloseGrab();
+        }
+        public class MiddleGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-1650);
+                leftPivot.setTargetPosition(-900);
+                rightPivot.setTargetPosition(-900);
+                wait(500);
+                wrist.setPosition(0.1);
+                claw.setPosition(0.5);
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action middleGrab() {
+            return new Macros.MiddleGrab();
+        }
+        public class FarGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-2250);
+                leftPivot.setTargetPosition(-850);
+                rightPivot.setTargetPosition(-850);
+                wrist.setPosition(0.1);
+                claw.setPosition(0.5);
+                return false;
+            }
+        }
+        public Action farGrab() {
+            return new FarGrab();
+        }
+        }
+    }
