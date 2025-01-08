@@ -22,7 +22,7 @@ import java.util.List;
 @Config
 //Need the autnomous tag in order for it show up on driver station as an autonomous program
 // You can also set the name of the autonomous and the group
-@Autonomous(name = "SAMPLE_AUTONOMOUS", group = "Autonomous")
+@Autonomous(name = "SPEC_AUTONOMOUS", group = "Autonomous")
 public class SampleAutonomous extends LinearOpMode {
     private List<Action> runningActions = new ArrayList<>();
 

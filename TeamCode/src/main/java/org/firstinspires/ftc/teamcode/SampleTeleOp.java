@@ -44,10 +44,10 @@ public class SampleTeleOp extends LinearOpMode {
             imu.initialize(parameters);
 
         //initialize motors, you will need to change these parameters to match your motor setup and names.
-            Motor leftFront = new Motor(hardwareMap, "leftFront", Motor.GoBILDA.RPM_312);
-            Motor rightFront = new Motor(hardwareMap, "rightFront", Motor.GoBILDA.RPM_312);
-            Motor leftBack = new Motor(hardwareMap, "leftBack", Motor.GoBILDA.RPM_312);
-            Motor rightBack = new Motor(hardwareMap, "rightBack", Motor.GoBILDA.RPM_312);
+            Motor leftFront = new Motor(hardwareMap, "left_front_drive", Motor.GoBILDA.RPM_312);
+            Motor rightFront = new Motor(hardwareMap, "right_front_drive", Motor.GoBILDA.RPM_312);
+            Motor leftBack = new Motor(hardwareMap, "left_back_drive", Motor.GoBILDA.RPM_312);
+            Motor rightBack = new Motor(hardwareMap, "right_back_drive", Motor.GoBILDA.RPM_312);
 
         //change the braking behavior, this is mostly personal preference but I recommend leaving this unchanged.
             leftFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -75,7 +75,7 @@ public class SampleTeleOp extends LinearOpMode {
             Mechanisms.Claw claw = new Mechanisms.Claw(hardwareMap);
 
         //initialize wrist servo object from our mechanisms file
-            //Mechanisms.Wrist wrist = new Mechanisms.Wrist(hardwareMap);
+            Mechanisms.Macros macros = new Mechanisms.Macros(hardwareMap);
 
         //initialize slide object from our mechanisms file
             //Mechanisms.Slide slide = new Mechanisms.Slide(hardwareMap);
@@ -136,7 +136,7 @@ public class SampleTeleOp extends LinearOpMode {
                         }
                     else if (driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
                         runningActions.add(new SequentialAction(
-                                arm.armDown()
+                                macros.closeGrab()
                         ));
                         }
 

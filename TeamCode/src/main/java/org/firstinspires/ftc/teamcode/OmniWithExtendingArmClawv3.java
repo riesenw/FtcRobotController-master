@@ -31,8 +31,13 @@ package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive.PARAMS;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.LazyImu;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -43,6 +48,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @TeleOp(name = "Omni With Claw v3", group = "Linear OpMode")
 public class OmniWithExtendingArmClawv3 extends LinearOpMode {
@@ -60,6 +68,8 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
     private Servo clawDrive = null;
     private Servo clawtator = null;
     private LazyImu lazyImu;
+
+    private List<Action> runningActions = new ArrayList<>();
 
     @Override
     public void runOpMode() {
@@ -102,8 +112,12 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
         armDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //initialize controllers
+        GamepadEx driver1 = new GamepadEx(gamepad1);
 
+        Mechanisms.Macros macros = new Mechanisms.Macros(hardwareMap);
 
+        double grabPosition = 0;
 
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
@@ -114,62 +128,40 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            double max;
+
+            TelemetryPacket packet = new TelemetryPacket();
+
+            // updated based on gamepads
+
+            // update running actions
+            List<Action> newActions = new ArrayList<>();
+            for (Action action : runningActions) {
+                action.preview(packet.fieldOverlay());
+                if (action.run(packet)) {
+                    newActions.add(action);
+                }
+            }
+            runningActions = newActions;
 
 
+            //read controller buttons
+            driver1.readButtons();
 
-            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial = -0.3 * gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral = 0.3 * gamepad1.left_stick_x;
-            double yaw = 0.3 * gamepad1.right_stick_x;
+            if (driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+                runningActions.add(new SequentialAction(
+                        macros.closeGrabPosition()
 
+                ));
+            }
 
-
-
-
-
-
-            // Combine the joystick requests for each axis-motion to determine each wheel's power.
-            // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower = (axial + lateral + yaw) ;
-            double rightFrontPower = (axial - lateral - yaw) ;
-            double leftBackPower = (axial - lateral + yaw) ;
-            double rightBackPower = (axial + lateral - yaw) ;
-
-
-
-
-
-
-            // Normalize the values so no wheel power exceeds 100%
-            // This ensures that the robot maintains the desired motion.
-
-            // This is test code:
-            //
-            // Uncomment the following code to test your motor directions.
-            // Each button should make the corresponding motor run FORWARD.
-            //   1) First get all the motors to take to correct positions on the robot
-            //      by adjusting your Robot Configuration if necessary.
-            //   2) Then make sure they run in the correct direction by modifying the
-            //      the setDirection() calls above.
-            // Once the correct motors move in the correct direction re-comment this code.
-
-            /*
-            leftFrontPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad
-            leftBackPower   = gamepad1.a ? 1.0 : 0.0;  // A gamepad
-            rightFrontPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
-            rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
-            */
 
             drive.driveFieldCentric(
-                    -0.6 * gamepad1.left_stick_x,
-                    0.6 * gamepad1.left_stick_y,
-                    -0.6 * gamepad1.right_stick_x,
+                    -0.6 * driver1.getLeftX(),
+                    -0.6 * driver1.getLeftY(),
+                    -0.6 * driver1.getRightX(),
                     lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES),
                     true
-                    );
-
-
+            );
 
 
             // Show the elapsed game time and wheel power.
@@ -178,6 +170,7 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
         }
     }
 }
+
 
 
 

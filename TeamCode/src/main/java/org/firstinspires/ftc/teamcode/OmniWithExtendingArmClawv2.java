@@ -104,8 +104,8 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
         slideDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //claw spiny thing code defining
-        double servoTargetPosition = 0.75;
-        double increment = 0.03;
+        double servoTargetPosition = 0.65;
+        double increment = 0.05;
 
         //open claw when init
         //clawDrive.setPosition(0.55);
@@ -184,13 +184,14 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             if ((armDrive1.getCurrentPosition() <= -4900) && (moveArm < 0)) armPower = 0.0;
 
             //claw moving stuff
-            if (gamepad2.right_bumper) clawDrive.setPosition(0.55);
-            if (!gamepad2.right_bumper) clawDrive.setPosition(1);
+            if (gamepad2.right_bumper) clawDrive.setPosition(0.5);
+            if (!gamepad2.right_bumper) clawDrive.setPosition(0.7);
+
 
             //claw spiny stuff
 
 
-            if ((gamepad2.left_bumper) && (servoTargetPosition < 0.8)) {
+            if ((gamepad2.left_bumper) && (servoTargetPosition < 0.65)) {
                 servoTargetPosition += increment;
             }
             if ((gamepad2.left_trigger > 0.1) && (servoTargetPosition > 0)) {
@@ -224,9 +225,9 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             */
 
             drive.driveFieldCentric(
-                    -gamepad1.left_stick_x,
-                    gamepad1.left_stick_y,
-                    -gamepad1.right_stick_x,
+                    -0.6 * speedFactor1 * gamepad1.left_stick_x,
+                    0.6 * speedFactor1 * gamepad1.left_stick_y,
+                    -0.6 * speedFactor1 * gamepad1.right_stick_x,
                     lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES),
                     true
                     );

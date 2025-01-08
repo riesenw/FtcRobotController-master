@@ -98,6 +98,7 @@ public class Mechanisms {
         public Action armSpec() {
             return new Arm.ArmSpec();
         }
+
     }
 
     //lift class (this will require an encoder plugged into the motor)
@@ -350,9 +351,9 @@ public class Mechanisms {
     }
                                                                                                                     //HERE
     public static class Macros {
-        private Motor extender;
-        private Motor leftPivot;
-        private Motor rightPivot;
+        public Motor extender;
+        public Motor leftPivot;
+        public Motor rightPivot;
         private Servo wrist;
         private Servo claw;
         //create the claw object from hardware map
@@ -379,6 +380,27 @@ public class Mechanisms {
         }
 
         //implement action class in our close claw function
+        public class resetMacros implements Action {
+
+            // actions are formatted via telemetry packets as below
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                // powers on motor, if it is not on
+                //set the target position of the lift to 3000 ticks
+                //leftPivot.resetEncoder();
+                leftPivot.resetEncoder();
+                rightPivot.resetEncoder();
+                extender.resetEncoder();
+                return false;
+                // overall, the action powers the lift until it surpasses
+                // 3000 encoder ticks, then powers it off2
+            }
+        }
+        public Action resetMacros() {
+            return new Macros.resetMacros();
+        }
+
 
         public class CloseGrabPosition implements Action {
             @Override
@@ -388,7 +410,7 @@ public class Mechanisms {
                 leftPivot.setTargetPosition(-450);
                 rightPivot.setTargetPosition(-450);
                 wrist.setPosition(0.1);
-                claw.setPosition(0.5);
+                claw.setPosition(0.7);
 
                 return false;
             }
@@ -404,9 +426,8 @@ public class Mechanisms {
                 extender.setTargetPosition(-1650);
                 leftPivot.setTargetPosition(-900);
                 rightPivot.setTargetPosition(-900);
-                wait(500);
                 wrist.setPosition(0.1);
-                claw.setPosition(0.5);
+                claw.setPosition(0.7);
                 return false;
             }
         }
@@ -422,20 +443,20 @@ public class Mechanisms {
                 leftPivot.setTargetPosition(-950);
                 rightPivot.setTargetPosition(-950);
                 wrist.setPosition(0.1);
-                claw.setPosition(0.5);
+                claw.setPosition(0.7);
                 return false;
             }
         }
         public Action farGrabPosition() {
-            return new FarGrabPosition();
+            return new Macros.FarGrabPosition();
         }
         public class CloseGrab implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
                 extender.setTargetPosition(-500);
-                leftPivot.setTargetPosition(-450);
-                rightPivot.setTargetPosition(-450);
+                leftPivot.setTargetPosition(-350);
+                rightPivot.setTargetPosition(-350);
                 wrist.setPosition(0.1);
                 claw.setPosition(0.5);
 
@@ -451,9 +472,8 @@ public class Mechanisms {
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
                 extender.setTargetPosition(-1650);
-                leftPivot.setTargetPosition(-900);
-                rightPivot.setTargetPosition(-900);
-                wait(500);
+                leftPivot.setTargetPosition(-800);
+                rightPivot.setTargetPosition(-800);
                 wrist.setPosition(0.1);
                 claw.setPosition(0.5);
                 return false;
@@ -476,7 +496,82 @@ public class Mechanisms {
             }
         }
         public Action farGrab() {
-            return new FarGrab();
+            return new Macros.FarGrab();
         }
+        public class PullIn implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                extender.setTargetPosition(0);
+                leftPivot.setTargetPosition(0);
+                rightPivot.setTargetPosition(0);
+                wrist.setPosition(0.65);
+                claw.setPosition(0.5);
+                return false;
+
+            }
         }
+        public Action pullIn() { return new Macros.PullIn(); }
+        public class SampleUp implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                extender.setTargetPosition(-2200);
+                leftPivot.setTargetPosition(-5100);
+                rightPivot.setTargetPosition(-5100);
+                wrist.setPosition(0);
+                claw.setPosition(0.5);
+                return false;
+
+            }
+        }
+        public Action sampleUp() { return new Macros.SampleUp(); }
+        public class SampleScore implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                extender.setTargetPosition(-2200);
+                leftPivot.setTargetPosition(-5100);
+                rightPivot.setTargetPosition(-5100);
+                wrist.setPosition(0.65);
+                claw.setPosition(0.7);
+                return false;
+            }
+        }
+        public Action sampleScore() { return new Macros.SampleScore(); }
+        public class SampleReturn implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                extender.setTargetPosition(0);
+                leftPivot.setTargetPosition(0);
+                rightPivot.setTargetPosition(0);
+                wrist.setPosition(0.4);
+                claw.setPosition(0.7);
+                return false;
+            }
+        }
+        public Action sampleReturn() { return new Macros.SampleReturn(); }
+
+        public class UpdateMacros implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                // powers on motor, if it is not on
+                //set the target position of the lift to 3000 ticks
+                if (!extender.atTargetPosition()) {
+                    extender.set(1);
+                }
+                if (!leftPivot.atTargetPosition()) {
+                    leftPivot.set(0.9);
+                }
+                if (!rightPivot.atTargetPosition()) {
+                    rightPivot.set(0.9);
+                }
+                return true;
+                // overall, the action powers the lift until it surpasses
+                // 3000 encoder ticks, then powers it off2
+            }
+        }
+        public Action updateMacros() {
+            return new Macros.UpdateMacros();
+        }
+
+
     }
+}
