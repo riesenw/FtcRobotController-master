@@ -204,6 +204,134 @@ public class Mechanisms {
             return new PivotSpecGrab();
         }
 
+        public class CloseGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                leftPivot.setTargetPosition(-650);
+                rightPivot.setTargetPosition(-650);
+
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action closeGrabPosition() {
+            return new CloseGrabPosition();
+        }
+        public class MiddleGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                leftPivot.setTargetPosition(-900);
+                rightPivot.setTargetPosition(-900);
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action middleGrabPosition() {
+            return new MiddleGrabPosition();
+        }
+        public class FarGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                leftPivot.setTargetPosition(-950);
+                rightPivot.setTargetPosition(-950);
+
+                return false;
+            }
+        }
+        public Action farGrabPosition() {
+            return new FarGrabPosition();
+        }
+        public class CloseGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                leftPivot.setTargetPosition(-350);
+                rightPivot.setTargetPosition(-350);
+
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action closeGrab() {
+            return new CloseGrab();
+        }
+        public class MiddleGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                leftPivot.setTargetPosition(-800);
+                rightPivot.setTargetPosition(-800);
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action middleGrab() {
+            return new MiddleGrab();
+        }
+        public class FarGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                leftPivot.setTargetPosition(-850);
+                rightPivot.setTargetPosition(-850);
+
+                return false;
+            }
+        }
+        public Action farGrab() {
+            return new FarGrab();
+        }
+        public class PullIn implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                leftPivot.setTargetPosition(0);
+                rightPivot.setTargetPosition(0);
+
+                return false;
+
+            }
+        }
+        public Action pullIn() { return new PullIn(); }
+        public class SampleUp implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                leftPivot.setTargetPosition(-5100);
+                rightPivot.setTargetPosition(-5100);
+
+                return false;
+
+            }
+        }
+        public Action sampleUp() { return new SampleUp(); }
+        public class SampleScore implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                leftPivot.setTargetPosition(-5100);
+                rightPivot.setTargetPosition(-5100);
+
+                return false;
+            }
+        }
+        public Action sampleScore() { return new SampleScore(); }
+        public class SampleReturn implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                leftPivot.setTargetPosition(0);
+                rightPivot.setTargetPosition(0);
+
+                return false;
+            }
+        }
+        public Action sampleReturn() { return new SampleReturn(); }
+
+
         /*public class PivotSpecDown implements Action {
 
             // actions are formatted via telemetry packets as below
@@ -332,6 +460,134 @@ public class Mechanisms {
             return new Extender.ExtendGrab();
         }
 
+        public class CloseGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-500);
+
+
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action closeGrabPosition() {
+            return new Extender.CloseGrabPosition();
+        }
+        public class MiddleGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-1650);
+
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action middleGrabPosition() {
+            return new Extender.MiddleGrabPosition();
+        }
+        public class FarGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-2250);
+
+
+                return false;
+            }
+        }
+        public Action farGrabPosition() {
+            return new Extender.FarGrabPosition();
+        }
+        public class CloseGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-500);
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action closeGrab() {
+            return new Extender.CloseGrab();
+        }
+        public class MiddleGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-1650);
+
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action middleGrab() {
+            return new Extender.MiddleGrab();
+        }
+        public class FarGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+                extender.setTargetPosition(-2250);
+
+
+                return false;
+            }
+        }
+        public Action farGrab() {
+            return new Extender.FarGrab();
+        }
+        public class PullIn implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                extender.setTargetPosition(0);
+
+
+                return false;
+
+            }
+        }
+        public Action pullIn() { return new Extender.PullIn(); }
+        public class SampleUp implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                extender.setTargetPosition(-2200);
+
+
+                return false;
+
+            }
+        }
+        public Action sampleUp() { return new Extender.SampleUp(); }
+        public class SampleScore implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                extender.setTargetPosition(-2200);
+
+
+                return false;
+            }
+        }
+        public Action sampleScore() { return new Extender.SampleScore(); }
+        public class SampleReturn implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                extender.setTargetPosition(0);
+
+
+                return false;
+            }
+        }
+        public Action sampleReturn() { return new Extender.SampleReturn(); }
+
+
+
+
         public class UpdateExtender implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
@@ -350,15 +606,13 @@ public class Mechanisms {
         }
     }
                                                                                                                     //HERE
-    public static class Macros {
-        public Motor extender;
-        public Motor leftPivot;
-        public Motor rightPivot;
-        private Servo wrist;
-        private Servo claw;
+    public static class MotorMacros {
+        private Motor extender;
+        private Motor leftPivot;
+        private Motor rightPivot;
         //create the claw object from hardware map
 
-        public Macros(HardwareMap hardwareMap) {
+        public MotorMacros(HardwareMap hardwareMap) {
             extender = new Motor(hardwareMap, "slide_drive", Motor.GoBILDA.RPM_312);
             extender.setRunMode(Motor.RunMode.PositionControl);
             extender.setPositionCoefficient(0.0025);
@@ -375,12 +629,12 @@ public class Mechanisms {
             rightPivot.setPositionCoefficient(0.0016);
             leftPivot.setPositionCoefficient(0.0016);
             leftPivot.setRunMode(Motor.RunMode.PositionControl);
-            wrist = hardwareMap.get(Servo.class, "claw_rotate");
-            claw = hardwareMap.get(Servo.class, "claw");
         }
 
         //implement action class in our close claw function
-        public class resetMacros implements Action {
+
+
+        public class resetMotorMacros implements Action {
 
             // actions are formatted via telemetry packets as below
 
@@ -397,9 +651,11 @@ public class Mechanisms {
                 // 3000 encoder ticks, then powers it off2
             }
         }
-        public Action resetMacros() {
-            return new Macros.resetMacros();
+        public Action resetMotorMacros() {
+            return new MotorMacros.resetMotorMacros();
         }
+
+
 
 
         public class CloseGrabPosition implements Action {
@@ -409,15 +665,14 @@ public class Mechanisms {
                 extender.setTargetPosition(-500);
                 leftPivot.setTargetPosition(-450);
                 rightPivot.setTargetPosition(-450);
-                wrist.setPosition(0.1);
-                claw.setPosition(0.7);
+
 
                 return false;
             }
         }
         //allow the function to be able to called from other files
         public Action closeGrabPosition() {
-            return new Macros.CloseGrabPosition();
+            return new MotorMacros.CloseGrabPosition();
         }
         public class MiddleGrabPosition implements Action {
             @Override
@@ -426,14 +681,13 @@ public class Mechanisms {
                 extender.setTargetPosition(-1650);
                 leftPivot.setTargetPosition(-900);
                 rightPivot.setTargetPosition(-900);
-                wrist.setPosition(0.1);
-                claw.setPosition(0.7);
+
                 return false;
             }
         }
         //allow the function to be able to called from other files
         public Action middleGrabPosition() {
-            return new Macros.MiddleGrabPosition();
+            return new MotorMacros.MiddleGrabPosition();
         }
         public class FarGrabPosition implements Action {
             @Override
@@ -442,13 +696,12 @@ public class Mechanisms {
                 extender.setTargetPosition(-2250);
                 leftPivot.setTargetPosition(-950);
                 rightPivot.setTargetPosition(-950);
-                wrist.setPosition(0.1);
-                claw.setPosition(0.7);
+
                 return false;
             }
         }
         public Action farGrabPosition() {
-            return new Macros.FarGrabPosition();
+            return new MotorMacros.FarGrabPosition();
         }
         public class CloseGrab implements Action {
             @Override
@@ -457,15 +710,14 @@ public class Mechanisms {
                 extender.setTargetPosition(-500);
                 leftPivot.setTargetPosition(-350);
                 rightPivot.setTargetPosition(-350);
-                wrist.setPosition(0.1);
-                claw.setPosition(0.5);
+
 
                 return false;
             }
         }
         //allow the function to be able to called from other files
         public Action closeGrab() {
-            return new Macros.CloseGrab();
+            return new MotorMacros.CloseGrab();
         }
         public class MiddleGrab implements Action {
             @Override
@@ -474,14 +726,13 @@ public class Mechanisms {
                 extender.setTargetPosition(-1650);
                 leftPivot.setTargetPosition(-800);
                 rightPivot.setTargetPosition(-800);
-                wrist.setPosition(0.1);
-                claw.setPosition(0.5);
+
                 return false;
             }
         }
         //allow the function to be able to called from other files
         public Action middleGrab() {
-            return new Macros.MiddleGrab();
+            return new MotorMacros.MiddleGrab();
         }
         public class FarGrab implements Action {
             @Override
@@ -490,13 +741,12 @@ public class Mechanisms {
                 extender.setTargetPosition(-2250);
                 leftPivot.setTargetPosition(-850);
                 rightPivot.setTargetPosition(-850);
-                wrist.setPosition(0.1);
-                claw.setPosition(0.5);
+
                 return false;
             }
         }
         public Action farGrab() {
-            return new Macros.FarGrab();
+            return new MotorMacros.FarGrab();
         }
         public class PullIn implements Action {
             @Override
@@ -504,52 +754,48 @@ public class Mechanisms {
                 extender.setTargetPosition(0);
                 leftPivot.setTargetPosition(0);
                 rightPivot.setTargetPosition(0);
-                wrist.setPosition(0.65);
-                claw.setPosition(0.5);
+
                 return false;
 
             }
         }
-        public Action pullIn() { return new Macros.PullIn(); }
+        public Action pullIn() { return new MotorMacros.PullIn(); }
         public class SampleUp implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 extender.setTargetPosition(-2200);
                 leftPivot.setTargetPosition(-5100);
                 rightPivot.setTargetPosition(-5100);
-                wrist.setPosition(0);
-                claw.setPosition(0.5);
+
                 return false;
 
             }
         }
-        public Action sampleUp() { return new Macros.SampleUp(); }
+        public Action sampleUp() { return new MotorMacros.SampleUp(); }
         public class SampleScore implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 extender.setTargetPosition(-2200);
                 leftPivot.setTargetPosition(-5100);
                 rightPivot.setTargetPosition(-5100);
-                wrist.setPosition(0.65);
-                claw.setPosition(0.7);
+
                 return false;
             }
         }
-        public Action sampleScore() { return new Macros.SampleScore(); }
+        public Action sampleScore() { return new MotorMacros.SampleScore(); }
         public class SampleReturn implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 extender.setTargetPosition(0);
                 leftPivot.setTargetPosition(0);
                 rightPivot.setTargetPosition(0);
-                wrist.setPosition(0.4);
-                claw.setPosition(0.7);
+
                 return false;
             }
         }
-        public Action sampleReturn() { return new Macros.SampleReturn(); }
+        public Action sampleReturn() { return new MotorMacros.SampleReturn(); }
 
-        public class UpdateMacros implements Action {
+        public class UpdateMotorMacros implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 // powers on motor, if it is not on
@@ -568,10 +814,156 @@ public class Mechanisms {
                 // 3000 encoder ticks, then powers it off2
             }
         }
-        public Action updateMacros() {
-            return new Macros.UpdateMacros();
+        public Action updateMotorMacros() {
+            return new MotorMacros.UpdateMotorMacros();
         }
 
 
     }
-}
+    public static class ServoMacros {
+
+        private Servo wrist;
+        private Servo claw;
+        //create the claw object from hardware map
+
+        public ServoMacros(HardwareMap hardwareMap) {
+
+            wrist = hardwareMap.get(Servo.class, "claw_rotate");
+            claw = hardwareMap.get(Servo.class, "claw");
+        }
+
+        //implement action class in our close claw function
+
+
+
+        public class CloseGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+
+                wrist.setPosition(0.1);
+                claw.setPosition(0.5);
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action closeGrabPosition() {
+            return new ServoMacros.CloseGrabPosition();
+        }
+        public class MiddleGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+
+                wrist.setPosition(0.1);
+                claw.setPosition(0.5);
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action middleGrabPosition() {
+            return new ServoMacros.MiddleGrabPosition();
+        }
+        public class FarGrabPosition implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+
+                wrist.setPosition(0.1);
+                claw.setPosition(0.5);
+                return false;
+            }
+        }
+        public Action farGrabPosition() {
+            return new ServoMacros.FarGrabPosition();
+        }
+        public class CloseGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+
+                wrist.setPosition(0.1);
+                claw.setPosition(0.7);
+
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action closeGrab() {
+            return new ServoMacros.CloseGrab();
+        }
+        public class MiddleGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+
+                wrist.setPosition(0.1);
+                claw.setPosition(0.7);
+                return false;
+            }
+        }
+        //allow the function to be able to called from other files
+        public Action middleGrab() {
+            return new ServoMacros.MiddleGrab();
+        }
+        public class FarGrab implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                //when closeclaw is run, set the claw to closed position
+
+                wrist.setPosition(0.1);
+                claw.setPosition(0.7);
+                return false;
+            }
+        }
+        public Action farGrab() {
+            return new ServoMacros.FarGrab();
+        }
+        public class PullIn implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                wrist.setPosition(0.65);
+                claw.setPosition(0.7);
+                return false;
+
+            }
+        }
+        public Action pullIn() { return new ServoMacros.PullIn(); }
+        public class SampleUp implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                wrist.setPosition(0.3);
+                claw.setPosition(0.7);
+                return false;
+
+            }
+        }
+        public Action sampleUp() { return new ServoMacros.SampleUp(); }
+        public class SampleScore implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                wrist.setPosition(0.65);
+                claw.setPosition(0.5);
+                return false;
+            }
+        }
+        public Action sampleScore() { return new ServoMacros.SampleScore(); }
+        public class SampleReturn implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+
+                wrist.setPosition(0.4);
+                claw.setPosition(0.5);
+                return false;
+            }
+        }
+        public Action sampleReturn() { return new ServoMacros.SampleReturn(); }
+        }
+
+
+    }
+

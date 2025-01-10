@@ -115,8 +115,10 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
         //initialize controllers
         GamepadEx driver1 = new GamepadEx(gamepad1);
 
-        Mechanisms.Macros macros = new Mechanisms.Macros(hardwareMap);
-
+        Mechanisms.MotorMacros motorMacros = new Mechanisms.MotorMacros(hardwareMap);
+        Mechanisms.ServoMacros servoMacros = new Mechanisms.ServoMacros(hardwareMap);
+        Mechanisms.Extender extender = new Mechanisms.Extender(hardwareMap);
+        Mechanisms.Pivot pivot = new Mechanisms.Pivot(hardwareMap);
         double grabPosition = 0;
 
         // Wait for the game to start (driver presses START)
@@ -149,7 +151,10 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
 
             if (driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
                 runningActions.add(new SequentialAction(
-                        macros.closeGrabPosition()
+                        servoMacros.closeGrabPosition(),
+                        pivot.closeGrabPosition(),
+                        extender.closeGrabPosition()
+
 
                 ));
             }
