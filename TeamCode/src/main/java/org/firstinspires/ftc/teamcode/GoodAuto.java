@@ -46,9 +46,10 @@ public class GoodAuto extends LinearOpMode {
         TrajectoryActionBuilder traj1 = drive.actionBuilder(initialPose)
                 .afterTime(0, servoMacros.sampleUp())
                 .afterTime(0, pivot.sampleUp())
-                .afterTime(0, extender.sampleUp())
-                .splineToConstantHeading(new Vector2d(3.5, 21), Math.toRadians(180))
+                .afterTime(1, extender.sampleUp())
+                .splineToConstantHeading(new Vector2d(8.5, 21), Math.toRadians(180))
                 .turnTo(Math.toRadians(-25))
+                .splineToConstantHeading(new Vector2d(3.5, 21), Math.toRadians(180))
                 .afterTime(0, servoMacros.sampleScore())
                 .afterTime(0.5, servoMacros.sampleReturn())
                 .waitSeconds(0.5);
@@ -63,28 +64,58 @@ public class GoodAuto extends LinearOpMode {
 
 
         TrajectoryActionBuilder traj2 = traj1.endTrajectory().fresh()
-                .splineToConstantHeading(new Vector2d(13.25, 12), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(11.75, 13.5), Math.toRadians(180))
                 .afterTime(0, servoMacros.middleGrabPosition())
-                .afterTime(0, pivot.middleGrabPosition())
-                .afterTime(0, extender.middleGrabPosition())
+                .afterTime(0, pivot.middleGrab())
+                .afterTime(0, extender.middleGrab())
                 .afterTime(1.5, servoMacros.middleGrab())
                 .waitSeconds(2)
                 .afterTime(0, servoMacros.sampleUp())
                 .afterTime(0, pivot.sampleUp())
-                .afterTime(0, extender.sampleUp())
+                .afterTime(1, extender.sampleUp())
                 .splineToConstantHeading(new Vector2d(3.5, 21), Math.toRadians(180))
+                .afterTime(1, servoMacros.sampleScore())
+                .afterTime(1.5, servoMacros.sampleReturn());
+
+
+
+
+        TrajectoryActionBuilder traj3 = traj2.endTrajectory().fresh()
+                .splineToConstantHeading(new Vector2d(11.25, 13.5), Math.toRadians(180))
+                .turnTo(Math.toRadians(0))
+                .afterTime(0, servoMacros.middleGrabPosition())
+                .afterTime(0, pivot.middleGrab())
+                .afterTime(0, extender.middleGrab())
+                .afterTime(1.5, servoMacros.middleGrab())
+                .waitSeconds(2)
+                .afterTime(0, servoMacros.sampleUp())
+                .afterTime(0, pivot.sampleUp())
+                .afterTime(1, extender.sampleUp())
+                .splineToConstantHeading(new Vector2d(3.5, 21), Math.toRadians(180))
+                .turnTo(Math.toRadians(-25))
+                .afterTime(1, servoMacros.sampleScore())
+                .afterTime(1.5, servoMacros.sampleReturn());
+
+
+
+        TrajectoryActionBuilder traj4 = traj3.endTrajectory().fresh()
+                .splineToConstantHeading(new Vector2d(12.25, 17.75), Math.toRadians(180))
+                .turnTo(Math.toRadians(15))
+                .afterTime(0, servoMacros.middleGrabPosition())
+                .afterTime(0, pivot.middleGrab())
+                .afterTime(0, extender.middleGrab())
+                .afterTime(1.5, servoMacros.middleGrab())
+                .waitSeconds(2)
+                .afterTime(0, servoMacros.sampleUp())
+                .afterTime(0, pivot.sampleUp())
+                .afterTime(1, extender.sampleUp())
+                .splineToConstantHeading(new Vector2d(3.5, 21), Math.toRadians(180))
+                .turnTo(Math.toRadians(-25))
                 .afterTime(1, servoMacros.sampleScore())
                 .afterTime(1.5, servoMacros.sampleReturn())
                 .afterTime(1.5, pivot.sampleReturn())
-                .afterTime(1.7, extender.sampleReturn());
-
-
-
-
-        TrajectoryActionBuilder traj3 = traj2.endTrajectory().fresh();
-
-
-        TrajectoryActionBuilder traj4 = traj3.endTrajectory().fresh();
+                .afterTime(1.7, extender.sampleReturn())
+                .turnTo(Math.toRadians(0));
 
 
 
@@ -108,7 +139,9 @@ public class GoodAuto extends LinearOpMode {
         //run actions sequentially, so it will run each action in order
         runningActions.add(new SequentialAction(
                 traj1.build(),
-                traj2.build()
+                traj2.build(),
+                traj3.build(),
+                traj4.build()
 
 
                 ));

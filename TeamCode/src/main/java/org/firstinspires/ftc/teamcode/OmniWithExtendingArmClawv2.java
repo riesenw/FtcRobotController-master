@@ -176,6 +176,7 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             //double openedSlide     =;
 
             if ((slideDrive.getCurrentPosition() >= 0) && (extend > 0)) slidePower = 0.0;
+            if ((slideDrive.getCurrentPosition() <= -1800) && (extend < 0) && (armDrive1.getCurrentPosition() <= -3500)) slidePower = 0.0;
             if ((slideDrive.getCurrentPosition() <= -2200) && (extend < 0)) slidePower = 0.0;
 
             //repeat for arm
