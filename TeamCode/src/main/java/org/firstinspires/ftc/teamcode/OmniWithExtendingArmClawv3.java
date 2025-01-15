@@ -33,6 +33,7 @@ import static org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive.PARAMS;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.ftc.LazyImu;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
@@ -119,17 +120,27 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
         Mechanisms.ServoMacros servoMacros = new Mechanisms.ServoMacros(hardwareMap);
         Mechanisms.Extender extender = new Mechanisms.Extender(hardwareMap);
         Mechanisms.Pivot pivot = new Mechanisms.Pivot(hardwareMap);
+        Mechanisms.Arm wrist = new Mechanisms.Arm(hardwareMap);
+
         double grabPosition = 0;
+        double speedShift = 0.6;
+        double scoreUp = 0;
 
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        runningActions.add(new ParallelAction(
+                extender.updateExtender(),
+                pivot.updatePivot(),
+                motorMacros.updateMotorMacros()
+        ));
+
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+        while(opModeIsActive() && !isStopRequested()) {
 
             TelemetryPacket packet = new TelemetryPacket();
 
@@ -149,21 +160,103 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
             //read controller buttons
             driver1.readButtons();
 
-            if (driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+            if(driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+                if (grabPosition == 0) {
+                    runningActions.add(new SequentialAction(
+                            servoMacros.closeGrabPosition(),
+                            motorMacros.closeGrabPosition()
+                    ));
+                }
+                if (grabPosition == 1) {
+                    runningActions.add(new SequentialAction(
+                            servoMacros.middleGrabPosition(),
+                            motorMacros.middleGrabPosition()
+                    ));
+                }
+                if (grabPosition == 2) {
+                    runningActions.add(new SequentialAction(
+                            servoMacros.farGrabPosition(),
+                            motorMacros.farGrabPosition()
+                    ));
+                }
+                if (grabPosition == 3) {
+                    runningActions.add(new SequentialAction(
+                            servoMacros.pullIn(),
+                            motorMacros.pullIn()
+                    ));
+                }
+                if (grabPosition < 4) {
+                    grabPosition += 1;
+                }
+                if (grabPosition == 4) {
+                    grabPosition = 0;
+                }
+            }
+            if(driver1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
+                if (grabPosition == 2) {
+                    runningActions.add(new SequentialAction(
+                            servoMacros.middleGrab(),
+                            motorMacros.middleGrab()
+                    ));
+                }
+                if (grabPosition == 1) {
+                    runningActions.add(new SequentialAction(
+                            servoMacros.closeGrab(),
+                            motorMacros.closeGrab()
+                    ));
+                }
+                if (grabPosition == 3) {
+                    runningActions.add(new SequentialAction(
+                            servoMacros.farGrab(),
+                            motorMacros.farGrab()
+                    ));
+                }
+                grabPosition = 0;
+            }
+            if(driver1.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)) {
                 runningActions.add(new SequentialAction(
-                        servoMacros.closeGrabPosition(),
-                        pivot.closeGrabPosition(),
-                        extender.closeGrabPosition()
-
+                        servoMacros.pullIn(),
+                        motorMacros.pullIn()
+                ));
+            }
+            if (grabPosition == 0) {
+                speedShift = 0.8;
+            }
+            if (!(grabPosition == 0)  ) {
+                speedShift = 0.5;
+            }
+            if (!(scoreUp == 0)) {
+                speedShift = 0.4;
+            }
+            if ((grabPosition == 0) && (driver1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER))) {
+                runningActions.add(new SequentialAction(
+                        servoMacros.sampleUp(),
+                        motorMacros.sampleUp()
+                ));
+                scoreUp = 1;
+            }
+            if ((grabPosition == 0) && (scoreUp == 1) && (driver1.wasJustPressed(GamepadKeys.Button.DPAD_UP))) {
+                runningActions.add(new SequentialAction(
+                        servoMacros.sampleScore(),
+                        pivot.sampleReturn()
 
                 ));
             }
+            if ((grabPosition == 0) && (scoreUp == 1) && (driver1.wasJustReleased(GamepadKeys.Button.DPAD_UP))) {
+                runningActions.add(new SequentialAction(
+                        servoMacros.sampleReturn(),
+                        extender.sampleReturn()
+                ));
+                scoreUp = 0;
+            }
+
+
 
 
             drive.driveFieldCentric(
-                    -0.6 * driver1.getLeftX(),
-                    -0.6 * driver1.getLeftY(),
-                    -0.6 * driver1.getRightX(),
+                    -speedShift * driver1.getLeftX(),
+                    -speedShift * driver1.getLeftY(),
+                    -speedShift * driver1.getRightX(),
                     lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES),
                     true
             );
