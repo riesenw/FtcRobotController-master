@@ -116,7 +116,6 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
         //initialize controllers
         GamepadEx driver1 = new GamepadEx(gamepad1);
 
-        Mechanisms.MotorMacros motorMacros = new Mechanisms.MotorMacros(hardwareMap);
         Mechanisms.ServoMacros servoMacros = new Mechanisms.ServoMacros(hardwareMap);
         Mechanisms.Extender extender = new Mechanisms.Extender(hardwareMap);
         Mechanisms.Pivot pivot = new Mechanisms.Pivot(hardwareMap);
@@ -132,8 +131,7 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
 
         runningActions.add(new ParallelAction(
                 extender.updateExtender(),
-                pivot.updatePivot(),
-                motorMacros.updateMotorMacros()
+                pivot.updatePivot()
         ));
 
         waitForStart();
@@ -160,29 +158,35 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
             //read controller buttons
             driver1.readButtons();
 
-            if(driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+            if((driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) && (scoreUp == 0))) {
                 if (grabPosition == 0) {
                     runningActions.add(new SequentialAction(
                             servoMacros.closeGrabPosition(),
-                            motorMacros.closeGrabPosition()
+                            extender.closeGrabPosition(),
+                            pivot.closeGrabPosition()
                     ));
                 }
                 if (grabPosition == 1) {
                     runningActions.add(new SequentialAction(
                             servoMacros.middleGrabPosition(),
-                            motorMacros.middleGrabPosition()
+                            extender.middleGrabPosition(),
+                            pivot.middleGrabPosition()
                     ));
                 }
                 if (grabPosition == 2) {
                     runningActions.add(new SequentialAction(
                             servoMacros.farGrabPosition(),
-                            motorMacros.farGrabPosition()
+                            extender.farGrabPosition(),
+                            pivot.farGrabPosition()
+
                     ));
                 }
                 if (grabPosition == 3) {
                     runningActions.add(new SequentialAction(
                             servoMacros.pullIn(),
-                            motorMacros.pullIn()
+                            extender.pullIn(),
+                            pivot.pullIn()
+
                     ));
                 }
                 if (grabPosition < 4) {
@@ -192,31 +196,39 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
                     grabPosition = 0;
                 }
             }
-            if(driver1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
+            if((driver1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN) && (scoreUp == 0))) {
                 if (grabPosition == 2) {
                     runningActions.add(new SequentialAction(
                             servoMacros.middleGrab(),
-                            motorMacros.middleGrab()
+                            extender.middleGrab(),
+                            pivot.middleGrab()
+
                     ));
                 }
                 if (grabPosition == 1) {
                     runningActions.add(new SequentialAction(
                             servoMacros.closeGrab(),
-                            motorMacros.closeGrab()
+                            extender.closeGrab(),
+                            pivot.closeGrab()
+
                     ));
                 }
                 if (grabPosition == 3) {
                     runningActions.add(new SequentialAction(
                             servoMacros.farGrab(),
-                            motorMacros.farGrab()
+                            extender.farGrab(),
+                            pivot.farGrab()
+
                     ));
                 }
                 grabPosition = 0;
             }
-            if(driver1.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)) {
+            if ((driver1.wasJustReleased(GamepadKeys.Button.DPAD_DOWN) && (scoreUp == 0))) {
                 runningActions.add(new SequentialAction(
                         servoMacros.pullIn(),
-                        motorMacros.pullIn()
+                        extender.pullIn(),
+                        pivot.pullIn()
+
                 ));
             }
             if (grabPosition == 0) {
@@ -231,20 +243,22 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
             if ((grabPosition == 0) && (driver1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER))) {
                 runningActions.add(new SequentialAction(
                         servoMacros.sampleUp(),
-                        motorMacros.sampleUp()
+                        extender.sampleUp(),
+                        pivot.sampleUp()
                 ));
                 scoreUp = 1;
             }
             if ((grabPosition == 0) && (scoreUp == 1) && (driver1.wasJustPressed(GamepadKeys.Button.DPAD_UP))) {
                 runningActions.add(new SequentialAction(
                         servoMacros.sampleScore(),
-                        pivot.sampleReturn()
+                        extender.sampleScore()
 
                 ));
             }
             if ((grabPosition == 0) && (scoreUp == 1) && (driver1.wasJustReleased(GamepadKeys.Button.DPAD_UP))) {
                 runningActions.add(new SequentialAction(
                         servoMacros.sampleReturn(),
+                        pivot.sampleReturn(),
                         extender.sampleReturn()
                 ));
                 scoreUp = 0;

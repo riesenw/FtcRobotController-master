@@ -207,8 +207,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                leftPivot.setTargetPosition(-650);
-                rightPivot.setTargetPosition(-650);
+                leftPivot.setTargetPosition(-350);
+                rightPivot.setTargetPosition(-350);
 
 
                 return false;
@@ -222,8 +222,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                leftPivot.setTargetPosition(-900);
-                rightPivot.setTargetPosition(-900);
+                leftPivot.setTargetPosition(-600);
+                rightPivot.setTargetPosition(-600);
 
                 return false;
             }
@@ -236,8 +236,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                leftPivot.setTargetPosition(-950);
-                rightPivot.setTargetPosition(-950);
+                leftPivot.setTargetPosition(-850);
+                rightPivot.setTargetPosition(-850);
 
                 return false;
             }
@@ -249,8 +249,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                leftPivot.setTargetPosition(-350);
-                rightPivot.setTargetPosition(-350);
+                leftPivot.setTargetPosition(-50);
+                rightPivot.setTargetPosition(-50);
 
 
                 return false;
@@ -264,8 +264,9 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                leftPivot.setTargetPosition(-800);
-                rightPivot.setTargetPosition(-800);
+                leftPivot.setTargetPosition(-350);
+                rightPivot.setTargetPosition(-350);
+
 
                 return false;
             }
@@ -278,9 +279,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                leftPivot.setTargetPosition(-850);
-                rightPivot.setTargetPosition(-850);
-
+                leftPivot.setTargetPosition(-450);
+                rightPivot.setTargetPosition(-450);
                 return false;
             }
         }
@@ -290,8 +290,8 @@ public class Mechanisms {
         public class PullIn implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                leftPivot.setTargetPosition(0);
-                rightPivot.setTargetPosition(0);
+                leftPivot.setTargetPosition(-450);
+                rightPivot.setTargetPosition(-450);
 
                 return false;
 
@@ -322,8 +322,8 @@ public class Mechanisms {
         public class SampleReturn implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                leftPivot.setTargetPosition(0);
-                rightPivot.setTargetPosition(0);
+                leftPivot.setTargetPosition(-450);
+                rightPivot.setTargetPosition(-450);
 
                 return false;
             }
@@ -478,7 +478,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                extender.setTargetPosition(-1650);
+                extender.setTargetPosition(-1100);
+
 
 
                 return false;
@@ -492,7 +493,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                extender.setTargetPosition(-2250);
+                extender.setTargetPosition(-1650);
 
 
                 return false;
@@ -518,7 +519,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                extender.setTargetPosition(-1650);
+                extender.setTargetPosition(-1100);
 
 
                 return false;
@@ -532,7 +533,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                extender.setTargetPosition(-2250);
+                extender.setTargetPosition(-1650);
+
 
 
                 return false;
@@ -555,7 +557,7 @@ public class Mechanisms {
         public class SampleUp implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                extender.setTargetPosition(-2200);
+                extender.setTargetPosition(-2100);
 
 
                 return false;
@@ -663,8 +665,8 @@ public class Mechanisms {
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
                 extender.setTargetPosition(-500);
-                leftPivot.setTargetPosition(-450);
-                rightPivot.setTargetPosition(-450);
+                leftPivot.setTargetPosition(-350);
+                rightPivot.setTargetPosition(-350);
 
 
                 return false;
@@ -679,8 +681,8 @@ public class Mechanisms {
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
                 extender.setTargetPosition(-1100);
-                leftPivot.setTargetPosition(-700);
-                rightPivot.setTargetPosition(-700);
+                leftPivot.setTargetPosition(-650);
+                rightPivot.setTargetPosition(-500);
 
                 return false;
             }
@@ -694,8 +696,8 @@ public class Mechanisms {
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
                 extender.setTargetPosition(-1650);
-                leftPivot.setTargetPosition(-850);
-                rightPivot.setTargetPosition(-850);
+                leftPivot.setTargetPosition(-800);
+                rightPivot.setTargetPosition(-800);
 
                 return false;
             }
@@ -752,8 +754,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 extender.setTargetPosition(0);
-                leftPivot.setTargetPosition(-800);
-                rightPivot.setTargetPosition(-800);
+                leftPivot.setTargetPosition(-450);
+                rightPivot.setTargetPosition(-450);
 
                 return false;
 
@@ -763,7 +765,7 @@ public class Mechanisms {
         public class SampleUp implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                extender.setTargetPosition(-2100);
+                extender.setTargetPosition(-2000);
                 leftPivot.setTargetPosition(-5100);
                 rightPivot.setTargetPosition(-5100);
 
@@ -955,7 +957,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
 
-                wrist.setPosition(0.4);
+                wrist.setPosition(0);
                 claw.setPosition(0.5);
                 return false;
             }
