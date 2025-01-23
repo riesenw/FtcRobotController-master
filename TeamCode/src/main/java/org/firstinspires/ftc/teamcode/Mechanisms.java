@@ -39,7 +39,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when openclaw is run, set the claw to the open position
-                claw.setPosition(0.5);
+                claw.setPosition(0.2);
                 return false;
             }
         }
@@ -207,8 +207,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                leftPivot.setTargetPosition(-350);
-                rightPivot.setTargetPosition(-350);
+                leftPivot.setTargetPosition(-500);
+                rightPivot.setTargetPosition(-500);
 
 
                 return false;
@@ -222,8 +222,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                leftPivot.setTargetPosition(-600);
-                rightPivot.setTargetPosition(-600);
+                leftPivot.setTargetPosition(-750);
+                rightPivot.setTargetPosition(-750);
 
                 return false;
             }
@@ -236,8 +236,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                leftPivot.setTargetPosition(-850);
-                rightPivot.setTargetPosition(-850);
+                leftPivot.setTargetPosition(-900);
+                rightPivot.setTargetPosition(-900);
 
                 return false;
             }
@@ -843,7 +843,7 @@ public class Mechanisms {
                 //when closeclaw is run, set the claw to closed position
 
                 wrist.setPosition(0.1);
-                claw.setPosition(0.5);
+                claw.setPosition(0.2);
 
                 return false;
             }
@@ -858,7 +858,7 @@ public class Mechanisms {
                 //when closeclaw is run, set the claw to closed position
 
                 wrist.setPosition(0.1);
-                claw.setPosition(0.5);
+                claw.setPosition(0.2);
                 return false;
             }
         }
@@ -872,7 +872,7 @@ public class Mechanisms {
                 //when closeclaw is run, set the claw to closed position
 
                 wrist.setPosition(0.1);
-                claw.setPosition(0.5);
+                claw.setPosition(0.2);
                 return false;
             }
         }
@@ -947,8 +947,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
 
-                wrist.setPosition(0.65);
-                claw.setPosition(0.5);
+                wrist.setPosition(0.45);
+                claw.setPosition(0.2);
                 return false;
             }
         }
@@ -958,7 +958,7 @@ public class Mechanisms {
             public boolean run(@NonNull TelemetryPacket packet) {
 
                 wrist.setPosition(0);
-                claw.setPosition(0.5);
+                claw.setPosition(0.2);
                 return false;
             }
         }
