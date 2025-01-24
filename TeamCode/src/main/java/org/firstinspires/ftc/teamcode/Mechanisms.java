@@ -279,8 +279,8 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when closeclaw is run, set the claw to closed position
-                leftPivot.setTargetPosition(-450);
-                rightPivot.setTargetPosition(-450);
+                leftPivot.setTargetPosition(-700);
+                rightPivot.setTargetPosition(-700);
                 return false;
             }
         }
