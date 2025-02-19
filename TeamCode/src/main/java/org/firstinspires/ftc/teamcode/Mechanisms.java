@@ -151,8 +151,8 @@ public class Mechanisms {
                 // powers on motor, if it is not on
                 //set the target position of the lift to 3000 ticks
                 //leftPivot.setTargetPosition(1300);
-                leftPivot.setTargetPosition(-2500);
-                rightPivot.setTargetPosition(-2500);
+                leftPivot.setTargetPosition(-2550);
+                rightPivot.setTargetPosition(-2550);
                 return false;
                 // overall, the action powers the lift until it surpasses
                 // 3000 encoder ticks, then powers it off2
@@ -192,8 +192,8 @@ public class Mechanisms {
             public boolean run(@NonNull TelemetryPacket packet) {
                 // powers on motor, if it is not on
                 //set the target position of the lift to 3000 ticks
-                leftPivot.setTargetPosition(-850);
-                rightPivot.setTargetPosition(-850);
+                leftPivot.setTargetPosition(-750);
+                rightPivot.setTargetPosition(-750);
                 return false;
                 // overall, the action powers the lift until it surpasses
                 // 3000 encoder ticks, then powers it off2
@@ -424,7 +424,7 @@ public class Mechanisms {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 //when openclaw is run, set the claw to the open position
-                extender.setTargetPosition(-2200);
+                extender.setTargetPosition(-2300);
                 return false;
             }
         }

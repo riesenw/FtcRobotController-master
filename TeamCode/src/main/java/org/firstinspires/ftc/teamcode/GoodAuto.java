@@ -109,7 +109,7 @@ public class GoodAuto extends LinearOpMode {
                 .afterTime(0, pivot.farGrab())
                 .afterTime(0, extender.farGrab())
                 .waitSeconds(1.5)
-                .splineToConstantHeading(new Vector2d(12.25, 20), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(12.25, 21), Math.toRadians(180))
                 .afterTime(0, servoMacros.farGrab())
                 .waitSeconds(1)
                 .afterTime(0, servoMacros.sampleUp())

@@ -120,10 +120,12 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
         Mechanisms.Extender extender = new Mechanisms.Extender(hardwareMap);
         Mechanisms.Pivot pivot = new Mechanisms.Pivot(hardwareMap);
         Mechanisms.Arm wrist = new Mechanisms.Arm(hardwareMap);
+        Mechanisms.Claw claw = new Mechanisms.Claw(hardwareMap);
 
         double grabPosition = 0;
         double speedShift = 0.6;
         double scoreUp = 0;
+        double specGrab = 0;
 
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
@@ -158,7 +160,7 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
             //read controller buttons
             driver1.readButtons();
 
-            if((driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) && (scoreUp == 0))) {
+            if((driver1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) && (scoreUp == 0) && (specGrab == 0))) {
                 if (grabPosition == 0) {
                     runningActions.add(new SequentialAction(
                             servoMacros.closeGrabPosition(),
@@ -196,7 +198,7 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
                     grabPosition = 0;
                 }
             }
-            if((driver1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN) && (scoreUp == 0))) {
+            if((driver1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN) && (scoreUp == 0) && (specGrab == 0))) {
                 if (grabPosition == 2) {
                     runningActions.add(new SequentialAction(
                             servoMacros.middleGrab(),
@@ -223,7 +225,7 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
                 }
                 grabPosition = 0;
             }
-            if ((driver1.wasJustReleased(GamepadKeys.Button.DPAD_DOWN) && (scoreUp == 0))) {
+            if ((driver1.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)) && (scoreUp == 0) && (specGrab == 0)) {
                 runningActions.add(new SequentialAction(
                         servoMacros.pullIn(),
                         extender.pullIn(),
@@ -240,7 +242,10 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
             if (!(scoreUp == 0)) {
                 speedShift = 0.4;
             }
-            if ((grabPosition == 0) && (driver1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER))) {
+            if (!(specGrab == 0)) {
+                speedShift = 0.4;
+            }
+            if ((grabPosition == 0) && (driver1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) && (specGrab == 0)) {
                 runningActions.add(new SequentialAction(
                         servoMacros.sampleUp(),
                         extender.sampleUp(),
@@ -248,20 +253,56 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
                 ));
                 scoreUp = 1;
             }
-            if ((grabPosition == 0) && (scoreUp == 1) && (driver1.wasJustPressed(GamepadKeys.Button.DPAD_UP))) {
+            if ((grabPosition == 0) && (scoreUp == 1) && (driver1.wasJustPressed(GamepadKeys.Button.DPAD_UP)) && (specGrab == 0)) {
                 runningActions.add(new SequentialAction(
                         servoMacros.sampleScore(),
-                        extender.sampleScore()
+                        extender.extendOut()
 
                 ));
             }
-            if ((grabPosition == 0) && (scoreUp == 1) && (driver1.wasJustReleased(GamepadKeys.Button.DPAD_UP))) {
+            if ((grabPosition == 0) && (scoreUp == 1) && (driver1.wasJustReleased(GamepadKeys.Button.DPAD_UP)) && (specGrab == 0)) {
                 runningActions.add(new SequentialAction(
                         servoMacros.sampleReturn(),
                         pivot.sampleReturn(),
                         extender.sampleReturn()
                 ));
                 scoreUp = 0;
+            }
+            if ((grabPosition == 0) && (scoreUp == 0) && (driver1.wasJustPressed(GamepadKeys.Button.A)) && (specGrab == 0)) {
+                runningActions.add(new SequentialAction(
+                        pivot.pivotSpecGrab(),
+                        extender.extendIn(),
+                        wrist.armSpec(),
+                        claw.openClaw()
+                ));
+                specGrab += 1;
+            }
+            if ((grabPosition == 0) && (scoreUp == 0) && (driver1.wasJustReleased(GamepadKeys.Button.A)) && (specGrab == 1)) {
+                runningActions.add(new SequentialAction(
+                        claw.closeClaw()
+
+
+                ));
+                specGrab = 0;
+            }
+            if ((grabPosition == 0) && (scoreUp == 0) && (driver1.wasJustPressed(GamepadKeys.Button.B)) && (specGrab == 0)) {
+                runningActions.add(new SequentialAction(
+                        pivot.pivotClippingPos(),
+                        extender.extendIn(),
+                        wrist.armUp()
+                ));
+            }
+            if ((grabPosition == 0) && (scoreUp == 0) && (driver1.wasJustPressed(GamepadKeys.Button.X)) && (specGrab == 0)) {
+                runningActions.add(new SequentialAction(
+                        extender.extendSpec()
+                ));
+            }
+            if ((grabPosition == 0) && (scoreUp == 0) && (driver1.wasJustReleased(GamepadKeys.Button.X)) && (specGrab == 0)) {
+                runningActions.add(new SequentialAction(
+                        claw.openClaw(),
+                        extender.extendIn(),
+                        pivot.pivotClipDown()
+                ));
             }
 
 

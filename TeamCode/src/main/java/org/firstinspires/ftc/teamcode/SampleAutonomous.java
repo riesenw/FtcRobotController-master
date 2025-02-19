@@ -43,9 +43,9 @@ public class SampleAutonomous extends LinearOpMode {
 
 
         TrajectoryActionBuilder traj1 = drive.actionBuilder(initialPose);
+
                 //simple movement, spline to a linear heading, so it will go to position
                 //(10, 10) with a heading of 90 degrees
-
                 //move lift up after 1.5 seconds
                 /*.afterTime(1.5, lift.liftUp())*/
 
