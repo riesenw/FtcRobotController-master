@@ -147,7 +147,7 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             double lateral = 0.3 * gamepad1.left_stick_x;
             double yaw = 0.3 * gamepad1.right_stick_x;
 
-            double extend = 0.8 * gamepad2.right_stick_y;
+            double extend = 2 * gamepad2.right_stick_y;
             double moveArm = 1 * gamepad2.left_stick_y;
 
             //unused for now
@@ -176,11 +176,12 @@ public class OmniWithExtendingArmClawv2 extends LinearOpMode {
             //double openedSlide     =;
 
             if ((slideDrive.getCurrentPosition() >= 0) && (extend > 0)) slidePower = 0.0;
-            if ((slideDrive.getCurrentPosition() <= -1800) && (extend < 0) && (armDrive1.getCurrentPosition() <= -3500)) slidePower = 0.0;
-            if ((slideDrive.getCurrentPosition() <= -2200) && (extend < 0)) slidePower = 0.0;
+            if ((armDrive1.getCurrentPosition() >= -3300) && (slideDrive.getCurrentPosition() <= -6200) && (slidePower <= 0)) slidePower = 0.0;
+            if ((slideDrive.getCurrentPosition() <= -8500) && (extend < 0)) slidePower = 0.0;
 
             //repeat for arm
 
+            if ((armDrive1.getCurrentPosition() >= -3300) && (slideDrive.getCurrentPosition() <= -6200) && (armPower >= 0)) armPower = 0.0;
             if ((armDrive1.getCurrentPosition() >= 0) && (moveArm > 0)) armPower = 0.0;
             if ((armDrive1.getCurrentPosition() <= -4900) && (moveArm < 0)) armPower = 0.0;
 

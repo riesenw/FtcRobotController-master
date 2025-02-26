@@ -64,12 +64,12 @@ public class GoodAuto extends LinearOpMode {
 
 
         TrajectoryActionBuilder traj2 = traj1.endTrajectory().fresh()
-                .splineToConstantHeading(new Vector2d(11.75, 11.75), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(13.75, 11.25), Math.toRadians(180))
                 .afterTime(0, servoMacros.farGrabPosition())
                 .afterTime(0, pivot.farGrab())
                 .afterTime(0, extender.farGrab())
                 .waitSeconds(1.5)
-                .splineToConstantHeading(new Vector2d(11.75, 15.75), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(13.75, 15.25), Math.toRadians(180))
                 .afterTime(0, servoMacros.farGrab())
                 .waitSeconds(1)
                 .afterTime(0, servoMacros.sampleUp())
@@ -83,13 +83,13 @@ public class GoodAuto extends LinearOpMode {
 
 
         TrajectoryActionBuilder traj3 = traj2.endTrajectory().fresh()
-                .splineToConstantHeading(new Vector2d(11.25, 11.5), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(12.25, 12.5), Math.toRadians(180))
                 .turnTo(Math.toRadians(0))
                 .afterTime(0, servoMacros.farGrabPosition())
                 .afterTime(0, pivot.farGrab())
                 .afterTime(0, extender.farGrab())
                 .waitSeconds(1.5)
-                .splineToConstantHeading(new Vector2d(11.25, 15.5), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(12.25, 18.5), Math.toRadians(180))
                 .afterTime(0, servoMacros.farGrab())
                 .waitSeconds(1)
                 .afterTime(0, servoMacros.sampleUp())
@@ -103,13 +103,13 @@ public class GoodAuto extends LinearOpMode {
 
 
         TrajectoryActionBuilder traj4 = traj3.endTrajectory().fresh()
-                .splineToConstantHeading(new Vector2d(12.25, 17), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(13.25, 17), Math.toRadians(180))
                 .turnTo(Math.toRadians(15))
                 .afterTime(0, servoMacros.farGrabPosition())
                 .afterTime(0, pivot.farGrab())
                 .afterTime(0, extender.farGrab())
                 .waitSeconds(1.5)
-                .splineToConstantHeading(new Vector2d(12.25, 21), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(13.25, 21), Math.toRadians(180))
                 .afterTime(0, servoMacros.farGrab())
                 .waitSeconds(1)
                 .afterTime(0, servoMacros.sampleUp())

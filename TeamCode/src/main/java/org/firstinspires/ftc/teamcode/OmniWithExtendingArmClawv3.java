@@ -263,7 +263,7 @@ public class OmniWithExtendingArmClawv3 extends LinearOpMode {
             if ((grabPosition == 0) && (scoreUp == 1) && (driver1.wasJustReleased(GamepadKeys.Button.DPAD_UP)) && (specGrab == 0)) {
                 runningActions.add(new SequentialAction(
                         servoMacros.sampleReturn(),
-                        pivot.sampleReturn(),
+                        pivot.pullIn(),
                         extender.sampleReturn()
                 ));
                 scoreUp = 0;
